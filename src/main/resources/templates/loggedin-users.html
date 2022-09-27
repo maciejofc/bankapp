@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+
+</head>
+
+<body class="d-flex flex-column min-vh-100">
+
+
+<div th:each="user: ${userSessions}">
+    <p th:text="${user.getUsername()}"/>
+
+
+</div>
+</body>
+</html>

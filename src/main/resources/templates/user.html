@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:sec="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/bootstrap :: baseHead(~{::title}, ~{::link})">
+    <title>User</title>
+    <link href="#" rel="stylesheet">
+</head>
+
+<body class="d-flex flex-column min-vh-100">
+
+
+<div th:replace="fragments/header :: header">
+
+</div>
+<nav th:replace="fragments/nav :: menu"></nav>
+
+<div class="container-fluid ">
+    <h1>User </h1>
+    <div class="d-flex flex-column">
+        <p th:text="${user.fullName}"></p>
+        <p th:text="${user.email}"></p>
+        <p th:text="${user.birthDay}"></p>
+        <p th:text="${user.userType}"></p>
+        <p th:text="${user.createdAt}"></p>
+        <p th:text="${user.updatedAt}"></p>
+        <p th:if="${user.isLocked}">
+            User banned
+            <a class="btn btn-danger" role="button" sec:authorize="hasRole('ADMIN')"
+               th:href="@{~/user/unban(userId=${user.id})}" th:text="Unban"></a>
+        </p>
+        <p th:unless="${user.isLocked}">
+            User not banned
+
+            <a class="btn btn-danger" role="button" sec:authorize="hasRole('ADMIN')"
+               th:href="@{~/user/ban(userId=${user.id})}" th:text="Ban"></a>
+        </p>
+
+
+    </div>
+
+
+</div>
+<footer th:replace="fragments/footer :: footer">
+
+</footer>
+</body>
+</html>

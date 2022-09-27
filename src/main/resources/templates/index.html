@@ -1,0 +1,26 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/bootstrap :: baseHead(~{::title}, ~{::link})">
+    <meta charset="UTF-8"/>
+    <title>Homepage</title>
+    <link href="#" rel="stylesheet">
+</head>
+<body class="d-flex flex-column min-vh-100">
+
+<div th:replace="fragments/header :: header">
+
+</div>
+<nav th:replace="fragments/nav :: menu"></nav>
+
+<div class="container-fluid  ">
+
+
+<h1>WELCOME PAGE</h1>
+
+</div>
+<footer th:replace="fragments/footer :: footer">
+
+</footer>
+
+</body>
+</html>

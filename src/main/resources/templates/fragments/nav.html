@@ -1,0 +1,36 @@
+<nav aria-label="Fourth navbar example" class="navbar navbar-expand-md navbar-dark bg-dark"
+     sec:authorize="isAuthenticated()"
+     th:fragment="menu" xmlns:sec="http://www.w3.org/1999/xhtml">
+    <div class="container-fluid">
+
+        <button class="navbar-toggler"
+                data-bs-target="#navbarsExample04" data-bs-toggle="collapse" type="button">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarsExample04">
+            <ul class="navbar-nav me-auto mb-2 mb-md-0">
+                <li class="nav-item">
+                    <a aria-current="page" class="nav-link active" href="#">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">1</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link disabled">2</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a aria-expanded="false" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#">3</a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="#">Action</a></li>
+                        <li><a class="dropdown-item" href="#">Another action</a></li>
+                        <li><a class="dropdown-item" href="#">Something else here</a></li>
+                    </ul>
+                </li>
+            </ul>
+            <form role="search">
+                <input aria-label="Search" class="form-control" placeholder="Search" type="search">
+            </form>
+        </div>
+    </div>
+</nav>
