@@ -1,9 +1,6 @@
 package pl.maciejowsky.bankapp.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.session.SessionInformation;
-import org.springframework.security.core.session.SessionRegistry;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -17,7 +14,6 @@ import javax.validation.Valid;
 import java.security.Principal;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Controller
 public class UserController {
@@ -27,8 +23,8 @@ public class UserController {
 
     @Autowired
     UserDAO userDAO;
-    @Autowired
-    SessionRegistry sessionRegistry;
+
+
 
 
     @GetMapping("/index")
@@ -36,37 +32,28 @@ public class UserController {
         return "index";
     }
 
-
     @GetMapping("/register")
     public String goToRegisterPage(Model model) {
-        FormRegisterUser user = new FormRegisterUser();
-        model.addAttribute("userForm", user);
+        model.addAttribute("userForm", new FormRegisterUser());
         model.addAttribute("listUserType", listUserType);
         return "register";
     }
-
 
     @PostMapping("/register")
     public String registerUser(@Valid @ModelAttribute("userForm") FormRegisterUser user,
                                BindingResult bindingResult,
                                Model model) {
         if (bindingResult.hasErrors()) {
-
             model.addAttribute("listUserType", listUserType);
-            System.out.println("-----------------------------");
-            System.out.println("DUPAAAAAAAAAAAAAA1111");
             return "register";
         }
         try {
             userService.registerUser(user);
-            System.out.println("-----------------------------");
-            System.out.println("DUPAAAAAAAAAAAAAA2222");
+
         } catch (UserAlreadyExistException e) {
             bindingResult.rejectValue("email", null, e.getMessage());
             model.addAttribute("userForm", user);
             model.addAttribute("listUserType", listUserType);
-            System.out.println("-----------------------------");
-            System.out.println("DUPAAAAAAAAAAAAAA3333");
             return "register";
         }
         return "redirect:/login?registerSuccess=true";
@@ -87,11 +74,19 @@ public class UserController {
     public String getAllUsers(Principal principal, Model model,
                               @RequestParam String orderBy, @RequestParam int page) {
 
-        // passing method in method parameter????
         model.addAttribute("numberOfPages", userService.getNumberOfPages(userDAO.findNumberOfUsers()));
         model.addAttribute("usersList", userService.getAllUsers(principal, orderBy, page));
         model.addAttribute("pageNo", page);
         return "users";
+    }
+
+    @GetMapping("/search-user")
+    public String getDetailedUserByEmail(Principal principal, Model model,
+                                         @RequestParam String email) {
+        int userId = userDAO.findUserByEmail(email).getId();
+        model.addAttribute("user", userService.getUserById(principal, userId));
+
+        return "user";
     }
 
     @GetMapping("/user")
@@ -101,27 +96,14 @@ public class UserController {
     }
 
     @GetMapping("/loggedin-users")
-    public String getAllLoggedInUsers(Model model) throws IllegalAccessException {
-        List<UserDetails> sessions = sessionRegistry.getAllPrincipals()
-                .stream()
-                .filter(principal -> principal instanceof UserDetails)
-                .map(UserDetails.class::cast)
-                .collect(Collectors.toList());
-
-        model.addAttribute("userSessions", sessions);
+    public String getAllLoggedInUsers(Principal principal, Model model) throws IllegalAccessException {
+        model.addAttribute("userSessions", userService.getLoggedInUsers(principal));
         return "loggedin-users";
     }
 
     @GetMapping("/user/ban")
     public String banUser(Model model, @RequestParam int userId) {
-        String userEmail = userService.getUserById(userId).getEmail();
         userService.changeUserLockProperty(userId, true);
-
-        List<SessionInformation> sessions = sessionRegistry.getAllSessions(userEmail, false);
-        if (sessions != null) {
-            System.out.println("deleting sessions");
-            sessions.forEach(sessionInformation -> sessionInformation.expireNow());
-        }
         model.addAttribute("user", userService.getUserById(userId));
         return "user";
     }

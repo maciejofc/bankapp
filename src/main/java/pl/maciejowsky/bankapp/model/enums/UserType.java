@@ -1,4 +1,4 @@
-package pl.maciejowsky.bankapp.enums;
+package pl.maciejowsky.bankapp.model.enums;
 
 public enum UserType {
     REGULAR, ENTREPRENEUR

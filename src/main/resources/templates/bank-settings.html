@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/bootstrap :: baseHead(~{::title}, ~{::link})">
+    <title>Settings</title>
+    <link rel="stylesheet" th:href="@{/styles.css}">
+</head>
+
+<body class="d-flex flex-column min-vh-100">
+
+
+<div th:replace="fragments/header :: header">
+
+</div>
+<nav th:replace="fragments/nav :: menu">
+
+</nav>
+<div class="container ">
+    <h1>Bank settings</h1>
+
+
+    <!--     -------------------ANNNOUNCEMENT SECTION ------------------- -->
+
+
+    <form  method="post" th:action="@{/bank/settings/announcement}" th:object="${announcementForm}">
+        <div class="row justify-content-center p-2">
+            <h3>Announcments</h3>
+            <div class="col-lg-6">
+
+                <label><h4>Enter an announcement</h4></label>
+                <textarea class="form-control" rows="3"
+                          th:field="*{content}"></textarea>
+
+            </div>
+        </div>
+        <div class="row justify-content-center p-3  ">
+            <div class="col-lg-3 d-flex align-items-center justify-content-around  ">
+
+                <label>Visibility: </label>
+                <select th:field="*{announcementVisibility}">
+                    <option th:each="visibilityType : ${T(pl.maciejowsky.bankapp.model.enums.AnnouncementVisibility).values()}"
+                            th:text="${visibilityType}"
+                            th:value="${visibilityType}"/>
+                </select>
+
+
+            </div>
+            <div class="col-lg-3">
+                <button class="btn btn-primary btn-lg btn-block " type="submit">Add announcement</button>
+            </div>
+        </div>
+    </form>
+    <h4>Active announcements</h4>
+    <div class="d-flex py-3 flex-wrap border-bottom">
+
+        <div class="p-4 m-4 border text-center
+          d-flex  flex-column" th:each="announcement:${announcements}">
+            <div class="align-self-start" th:text="${announcement.createdAt}"></div>
+            <div th:if="${announcement.shortenedContent == null}">
+                <div th:text="${announcement.content}"></div>
+            </div>
+            <div th:unless="${announcement.shortenedContent == null}">
+                <div th:text="${announcement.shortenedContent}"></div>
+            </div>
+            <div th:text="${announcement.announcementVisibility}"></div>
+            <a th:href="@{~/bank/settings/announcement(announcementId=${announcement.id})}">Delete announcement</a>
+        </div>
+    </div>
+
+
+    <!--     -------------------DEPOSIT SECTION ------------------- -->
+
+    <div class="row">
+        <h3>Deposits </h3>
+        <div class="col-lg-6 d-flex flex-wrap">
+
+            <div class="p-4 m-4 border text-center
+          d-flex flex-column" style="height:fit-content" th:each="depositVariant:${depositSettings}">
+                <div th:text="${depositVariant.name}"></div>
+                <div th:text="${depositVariant.MinDepositTime}"></div>
+                <div th:text="${depositVariant.MinPercentageRate}"></div>
+                <div th:text="${depositVariant.MinAmount}"></div>
+                <div th:text="${depositVariant.intendedFor}"></div>
+                <a th:href="@{~/bank/settings/deposit/delete(depositVariantId=${depositVariant.id})}">Delete variant</a>
+            </div>
+        </div>
+        <form class="col-lg-6  " method="post" th:action="@{/bank/settings/deposit/add}"
+              th:object="${depositSettingsForm}">
+
+            <div class=" d-flex flex-column p-3  ">
+
+                <div class="flex-row-container d-flex justify-content-between  p-2 align-items-center">
+                    <div class="border">Name for deposit variant</div>
+                    <div class="text-start form-floating ">
+                        <input class="form-control"
+                               th:field="*{name}"
+                               type="text"/>
+                        <label class="form-label">text</label>
+
+                    </div>
+
+                </div>
+
+                <div class="flex-row-container d-flex justify-content-between border p-2 align-items-center ">
+                    <div class="border">Minimum deposit time</div>
+                    <div class="text-start form-floating ">
+                        <input class="form-control"
+                               th:field="*{MinDepositTime}"
+                               type="text"/>
+                        <label class="form-label">minutes</label>
+
+                    </div>
+
+                </div>
+
+                <div class="flex-row-container d-flex justify-content-between border p-2 align-items-center">
+                    <div class=" border">Percantege rate</div>
+                    <div class="text-start  form-floating ">
+                        <input class="form-control" th:field="*{MinPercentageRate}"
+                               type="text"/>
+                        <label class="form-label">% rate</label>
+
+                    </div>
+
+                </div>
+
+                <div class="flex-row-container d-flex justify-content-between border p-2 align-items-center">
+                    <div class="border">Minimum amount</div>
+                    <div class="text-start form-floating ">
+                        <input class="form-control" th:field="*{MinAmount}"
+                               type="text"/>
+                        <label class="form-label">$</label>
+
+                    </div>
+
+                </div>
+                <div class="flex-row-container d-flex justify-content-between border p-2 align-items-center">
+                    <div class="border">Intended for</div>
+                    <div class="text-start form-floating ">
+
+                        <select th:field="*{intendedFor}">
+                            <option th:each="forUserType : ${T(pl.maciejowsky.bankapp.model.enums.UserType).values()}"
+                                    th:text="${forUserType}"
+                                    th:value="${forUserType}"/>
+                        </select>
+
+                    </div>
+
+                </div>
+
+
+            </div>
+
+            <div class="row">
+                <div class="col-12 text-center">
+                    <button class="btn btn-primary btn-lg btn-block " type="submit">Add variant</button>
+                </div>
+            </div>
+
+
+        </form>
+
+
+    </div>
+    <!--     -------------------TRANSFER SECTION ------------------- -->
+
+
+    <form method="post" th:action="@{/bank/settings/transfer}" th:object="${transferSettingsForm}">
+        <div class="row">
+            <h3>Transfers </h3>
+            <div class="col-12 border">
+
+                <div class=" d-flex flex-column p-3 ">
+
+                    <div class="flex-row-container d-flex justify-content-between border p-2 align-items-center">
+                        <div>Transfer express</div>
+                        <div class="text-start form-floating ">
+                            <input class="form-control" th:field="*{transferExpress}"
+                                   type="text"/>
+                            <label class="form-label">$</label>
+
+                        </div>
+                        <div class=" border text-center px-3"
+                             th:text="${transferSettings.transferExpress} "></div>
+                    </div>
+
+                    <div class="flex-row-container d-flex justify-content-between border p-2 align-items-center">
+                        <div>Transfer fast</div>
+                        <div class="text-start  form-floating ">
+                            <input class="form-control" th:field="*{transferFast}"
+                                   type="text"/>
+                            <label class="form-label">$</label>
+
+                        </div>
+                        <div class=" border text-center px-3"
+                             th:text="${transferSettings.transferFast} "></div>
+                    </div>
+
+                    <div class="flex-row-container d-flex justify-content-between border p-2 align-items-center">
+                        <div>Transfer normal</div>
+                        <div class="text-start form-floating ">
+                            <input class="form-control" th:field="*{transferNormal}"
+                                   type="text"/>
+                            <label class="form-label">$</label>
+
+                        </div>
+                        <div class=" border text-center px-3"
+                             th:text="${transferSettings.transferNormal} "></div>
+                    </div>
+                    <div class="flex-row-container d-flex justify-content-between border p-2 align-items-center">
+                        <div>Discount for entrepreneur</div>
+                        <div class="text-start form-floating ">
+                            <input class="form-control" th:field="*{entrepreneurDiscount}"
+                                   type="text"/>
+                            <label class="form-label">$</label>
+
+                        </div>
+                        <div class=" border text-center px-3"
+                             th:text="${transferSettings.entrepreneurDiscount} "></div>
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12 text-center">
+                <button class="btn btn-primary btn-lg btn-block " type="submit">Change transfer settings
+                </button>
+            </div>
+        </div>
+    </form>
+
+
+</div>
+<footer th:replace="fragments/footer :: footer">
+
+</footer>
+</body>

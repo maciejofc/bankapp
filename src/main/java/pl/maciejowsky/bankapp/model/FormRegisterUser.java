@@ -2,7 +2,7 @@ package pl.maciejowsky.bankapp.model;
 
 
 import org.springframework.format.annotation.DateTimeFormat;
-import pl.maciejowsky.bankapp.enums.UserType;
+import pl.maciejowsky.bankapp.model.enums.UserType;
 import pl.maciejowsky.bankapp.validations.Minimum18yearsConstraint;
 
 import javax.validation.constraints.Email;

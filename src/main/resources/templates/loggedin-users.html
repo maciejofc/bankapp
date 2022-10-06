@@ -1,16 +1,23 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 
-
+<head th:replace="fragments/bootstrap :: baseHead(~{::title}, ~{::link})">
+    <title>User</title>
+    <link href="#" rel="stylesheet">
 </head>
-
 <body class="d-flex flex-column min-vh-100">
+<div th:replace="fragments/header :: header">
 
+</div>
+<nav th:replace="fragments/nav :: menu"></nav>
 
 <div th:each="user: ${userSessions}">
     <p th:text="${user.getUsername()}"/>
 
 
 </div>
+<footer th:replace="fragments/footer :: footer">
+
+</footer>
 </body>
 </html>

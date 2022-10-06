@@ -1,12 +1,7 @@
 package pl.maciejowsky.bankapp.model;
 
-import org.springframework.format.annotation.DateTimeFormat;
-import pl.maciejowsky.bankapp.enums.UserType;
+import pl.maciejowsky.bankapp.model.enums.UserType;
 
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;

@@ -13,29 +13,33 @@
 </div>
 <nav th:replace="fragments/nav :: menu"></nav>
 
-<div class="container-fluid ">
+<div class="container ">
     <h1>User </h1>
-    <div class="d-flex flex-column">
-        <p th:text="${user.fullName}"></p>
-        <p th:text="${user.email}"></p>
-        <p th:text="${user.birthDay}"></p>
-        <p th:text="${user.userType}"></p>
-        <p th:text="${user.createdAt}"></p>
-        <p th:text="${user.updatedAt}"></p>
-        <p th:if="${user.isLocked}">
-            User banned
-            <a class="btn btn-danger" role="button" sec:authorize="hasRole('ADMIN')"
-               th:href="@{~/user/unban(userId=${user.id})}" th:text="Unban"></a>
-        </p>
-        <p th:unless="${user.isLocked}">
-            User not banned
+    <div th:if="${user==null}">You have no permission for that user</div>
+    <div th:unless="${user==null}">
+        <div class="d-flex flex-column">
+            <p th:text="${user.fullName}"></p>
+            <p th:text="${user.email}"></p>
+            <p th:text="${user.birthDay}"></p>
+            <p th:text="${user.userType}"></p>
+            <p th:text="${user.createdAt}"></p>
+            <p th:text="${user.updatedAt}"></p>
+            <p th:if="${user.isLocked}">
+                User banned
+                <a class="btn btn-danger" role="button" sec:authorize="hasRole('ADMIN')"
+                   th:href="@{~/user/unban(userId=${user.id})}" th:text="Unban"></a>
+            </p>
+            <p th:unless="${user.isLocked}">
+                User not banned
 
-            <a class="btn btn-danger" role="button" sec:authorize="hasRole('ADMIN')"
-               th:href="@{~/user/ban(userId=${user.id})}" th:text="Ban"></a>
-        </p>
+                <a class="btn btn-danger" role="button" sec:authorize="hasRole('ADMIN')"
+                   th:href="@{~/user/ban(userId=${user.id})}" th:text="Ban"></a>
+            </p>
 
 
+        </div>
     </div>
+
 
 
 </div>

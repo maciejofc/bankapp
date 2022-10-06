@@ -64,18 +64,18 @@ public class UserPrincipal implements UserDetails {
     }
 
 
-//    @Override
-//    public boolean equals(Object o) {
-//        if (this == o) return true;
-//        if (!(o instanceof UserPrincipal)) return false;
-//
-//        UserPrincipal that = (UserPrincipal) o;
-//
-//        return user.equals(that.user);
-//    }
-//
-//    @Override
-//    public int hashCode() {
-//        return user.hashCode();
-//    }
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof UserPrincipal)) return false;
+
+        UserPrincipal that = (UserPrincipal) o;
+
+        return user.equals(that.user);
+    }
+
+    @Override
+    public int hashCode() {
+        return user.hashCode();
+    }
 }

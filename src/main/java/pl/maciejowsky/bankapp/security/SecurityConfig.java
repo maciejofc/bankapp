@@ -69,11 +69,13 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.csrf().disable()
                 .authorizeRequests()
+
                 .antMatchers("/", "/index").permitAll()
                 .antMatchers("/register/**").permitAll()
                 .antMatchers("/user/ban").hasRole("ADMIN")
                 .antMatchers("/user/unban").hasRole("ADMIN")
                 .antMatchers("/users").hasRole("ADMIN")
+                .antMatchers("/bank").hasRole("ADMIN")
                 .antMatchers("/**").authenticated()
                 .and()
                 .formLogin(
