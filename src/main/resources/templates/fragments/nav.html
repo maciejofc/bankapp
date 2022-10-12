@@ -1,7 +1,7 @@
 <nav aria-label="Fourth navbar example" class="navbar navbar-expand-md navbar-dark bg-dark"
      sec:authorize="isAuthenticated()"
      th:fragment="menu" xmlns:sec="http://www.w3.org/1999/xhtml">
-    <div class="container-fluid">
+    <div class="container border">
 
         <button class="navbar-toggler"
                 data-bs-target="#navbarsExample04" data-bs-toggle="collapse" type="button">
@@ -9,16 +9,25 @@
         </button>
 
         <div class="collapse navbar-collapse" id="navbarsExample04">
-            <ul class="navbar-nav me-auto mb-2 mb-md-0">
+            <ul class="navbar-nav  mb-2 mb-md-0">
                 <li class="nav-item">
-                    <a class="nav-link" sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_MANAGER')"
+                    <a style="padding-left: 0"  class="nav-link" sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_MANAGER')"
                        th:href="@{~/users(orderBy=name,page=1)}">List users</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{~/bank/settings}">Bank settings</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{~/bank/settings}">Bank settings</a>
+                    <a style="padding-left: 0" class="nav-link" sec:authorize="hasAnyRole('ROLE_USER','ROLE_MANAGER')" th:href="@{~/bank/settings}">My profile</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" sec:authorize="hasRole('ROLE_USER')" th:href="@{~/transfers}">Transfers</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" sec:authorize="hasRole('ROLE_USER')" th:href="@{~/deposits}">Deposits</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" sec:authorize="hasAnyRole('ROLE_USER','ROLE_MANAGER')" th:href="@{~/alerts}">Alerts</a>
                 </li>
 
 

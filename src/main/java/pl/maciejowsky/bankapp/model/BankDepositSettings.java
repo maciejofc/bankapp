@@ -2,11 +2,21 @@ package pl.maciejowsky.bankapp.model;
 
 import pl.maciejowsky.bankapp.model.enums.UserType;
 
+import javax.validation.constraints.*;
+
 public class BankDepositSettings {
     private int id;
+    @Size(min = 3, max = 15)
     private String name;
+    @Min(value = 1)
+    @Max(value = 60)
     private int MinDepositTime;
+    @DecimalMin(value="0.01")
+    @DecimalMax(value="10.0")
+
     private double MinPercentageRate;
+    @Min(value = 100)
+    @Max(value = 10000)
     private int MinAmount;
 
     private UserType intendedFor;

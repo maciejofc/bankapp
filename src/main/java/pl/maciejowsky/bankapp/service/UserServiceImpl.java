@@ -34,7 +34,6 @@ public class UserServiceImpl implements UserService {
     }
 
 
-
     @Override
     public void registerUser(FormRegisterUser user) throws UserAlreadyExistException {
         if (checkIfUserAlreadyExist(user.getEmail())) {
@@ -70,7 +69,12 @@ public class UserServiceImpl implements UserService {
             default:
                 userList = null;
         }
+        //checking if user is online
+        if (userList != null) {
+            userList.stream().filter(user -> checkIfUserIsOnline(user.getEmail()))
+                    .forEach(user -> user.setOnline(true));
 
+        }
         String role = getUserRoleByUsername(principal.getName());
         if (role.equals("admin"))
             userList.stream().filter(user -> user.getRoles().equals("manager") || user.getRoles().equals("user"));
@@ -85,19 +89,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<UserDetails> getLoggedInUsers(Principal principalOfAsker) {
-        List<UserDetails> sessions = sessionRegistry.getAllPrincipals()
+    public boolean checkIfUserIsOnline(String username) {
+        boolean isOnline = sessionRegistry.getAllPrincipals()
                 .stream()
                 .filter(loggedUser -> loggedUser instanceof UserDetails)
-                .map(UserDetails.class::cast)
-                .collect(Collectors.toList());
-        String role = getUserRoleByUsername(principalOfAsker.getName());
-        if (role.equals("admin"))
-            sessions.stream().filter(loggedUser -> loggedUser.getAuthorities().contains("ROLE_MANAGER") || loggedUser.getAuthorities().contains("ROLE_USER"));
-        else if (role.equals("manager")) {
-            sessions.stream().filter(loggedUser -> loggedUser.getAuthorities().contains("ROLE_USER"));
-        }
-        return sessions;
+                .anyMatch(loggedUser -> ((UserDetails) loggedUser).getUsername().equals(username));
+        return isOnline;
     }
 
     @Override
@@ -113,7 +110,7 @@ public class UserServiceImpl implements UserService {
         String foundUserRole = getUserRoleByUsername(foundUser.getEmail());
 
         if (askerRole.equals("admin")) {
-            if(foundUserRole.equals("admin")){
+            if (foundUserRole.equals("admin")) {
                 return null;
             }
             return foundUser;

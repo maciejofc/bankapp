@@ -10,6 +10,7 @@ import java.util.List;
 
 public interface UserService {
     boolean checkIfUserAlreadyExist(String email);
+
     String getUserRoleByUsername(String email);
 
     void registerUser(FormRegisterUser user) throws UserAlreadyExistException;
@@ -18,10 +19,12 @@ public interface UserService {
 
     List<User> getAllUsers(Principal principal, String order, int page);
 
-    List<UserDetails> getLoggedInUsers(Principal principal);
+    boolean checkIfUserIsOnline(String username);
+
     void changeUserLockProperty(int userId, boolean banOrNot);
 
     User getUserById(int userId);
+
     User getUserById(Principal principalOfAsker, int userId);
 
 

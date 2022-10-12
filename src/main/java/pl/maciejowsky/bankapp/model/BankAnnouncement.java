@@ -2,8 +2,11 @@ package pl.maciejowsky.bankapp.model;
 
 import pl.maciejowsky.bankapp.model.enums.AnnouncementVisibility;
 
+import javax.validation.constraints.Size;
+
 public class BankAnnouncement {
     private int id;
+    @Size(min=20,max=250)
     private String content;
     private String shortenedContent;
     private AnnouncementVisibility announcementVisibility;

@@ -27,6 +27,16 @@ public class User implements Serializable {
     private String roles;
     private boolean isLocked;
 
+    private boolean isOnline=false;
+
+    public boolean isOnline() {
+        return isOnline;
+    }
+
+    public void setOnline(boolean online) {
+        isOnline = online;
+    }
+
     public User(int id, String fullName, LocalDate birthDay, String email, String password, UserType userType, String createdAt, String updatedAt, String authorities, String roles, boolean isLocked) {
         this.id = id;
         this.fullName = fullName;

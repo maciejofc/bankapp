@@ -95,11 +95,7 @@ public class UserController {
         return "user";
     }
 
-    @GetMapping("/loggedin-users")
-    public String getAllLoggedInUsers(Principal principal, Model model) throws IllegalAccessException {
-        model.addAttribute("userSessions", userService.getLoggedInUsers(principal));
-        return "loggedin-users";
-    }
+
 
     @GetMapping("/user/ban")
     public String banUser(Model model, @RequestParam int userId) {
@@ -116,9 +112,6 @@ public class UserController {
     }
 
 
-    @RequestMapping("/banned")
-    public String goToBannedPage() {
-        return "banned-acc";
-    }
+
 
 }

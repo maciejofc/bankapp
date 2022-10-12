@@ -1,14 +1,27 @@
 package pl.maciejowsky.bankapp.model;
 
+import javax.validation.constraints.DecimalMax;
+import javax.validation.constraints.DecimalMin;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+
 public class BankTransferSettings {
     private int id;
+    @Min(value = 0)
+    @Max(value = 20)
     private int transferExpress;
+    @Min(value = 0)
+    @Max(value = 20)
     private int transferFast;
-    private double transferNormal;
+    @Min(value = 0)
+    @Max(value = 20)
+    private int transferNormal;
+    @DecimalMin(value="0.0")
+    @DecimalMax(value="50.0")
     private double entrepreneurDiscount;
     private String createdAt;
 
-    public BankTransferSettings(int id, int transferExpress, int transferFast, double transferNormal, double entrepreneurDiscount, String createdAt) {
+    public BankTransferSettings(int id, int transferExpress, int transferFast, int transferNormal, double entrepreneurDiscount, String createdAt) {
         this.id = id;
         this.transferExpress = transferExpress;
         this.transferFast = transferFast;
@@ -25,7 +38,7 @@ public class BankTransferSettings {
         return transferFast;
     }
 
-    public double getTransferNormal() {
+    public int getTransferNormal() {
         return transferNormal;
     }
 
@@ -49,7 +62,7 @@ public class BankTransferSettings {
         this.transferFast = transferFast;
     }
 
-    public void setTransferNormal(double transferNormal) {
+    public void setTransferNormal(int transferNormal) {
         this.transferNormal = transferNormal;
     }
 

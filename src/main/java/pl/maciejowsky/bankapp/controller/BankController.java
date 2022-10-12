@@ -20,32 +20,37 @@ import java.util.List;
 
 @Controller()
 public class BankController {
-
+    private static final String ERROR_MESSAGE = "Invalid data passed";
     @Autowired
     BankService bankService;
 
-
-
-    @GetMapping("/bank/settings")
-    public String goToGlobalSettings(Model model) {
-
+    @ModelAttribute
+    public void addSettingsAttributes(Model model) {
         BankSettings bankSettings = bankService.getSettings();
         model.addAttribute("depositSettings", bankSettings.getBankDepositSettings());
         model.addAttribute("transferSettings", bankSettings.getBankTransferSettings());
         model.addAttribute("announcements", bankService.getBankAnnouncements());
-
-
         model.addAttribute("announcementForm", new BankAnnouncement());
         model.addAttribute("depositSettingsForm", new BankDepositSettings());
         model.addAttribute("transferSettingsForm", new BankTransferSettings());
+    }
+
+    @GetMapping("/bank/settings")
+    public String goToGlobalSettings(Model model) {
+
         return "bank-settings";
     }
 
 
     @PostMapping("/bank/settings/deposit/add")
-    public String addDepositVariant(@ModelAttribute("depositSettingsForm") BankDepositSettings bankDepositSettings,
+    public String addDepositVariant(@Valid @ModelAttribute("depositSettingsForm") BankDepositSettings bankDepositSettings,
+                                    BindingResult bindingResult,
                                     Model model) {
 
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("depositError", ERROR_MESSAGE);
+            return "bank-settings";
+        }
         bankService.addDepositVariant(bankDepositSettings);
         return "redirect:/bank/settings";
 
@@ -66,8 +71,7 @@ public class BankController {
                                          BindingResult bindingResult,
                                          Model model) {
         if (bindingResult.hasErrors()) {
-            model.addAttribute("depositSettings", bankService.getSettings().getBankDepositSettings());
-            model.addAttribute("transferSettings", bankService.getSettings().getBankDepositSettings());
+            model.addAttribute("transferError", ERROR_MESSAGE);
             return "bank-settings";
         } else {
             bankService.changeTransferSettings(bankTransferSettings);
@@ -79,7 +83,10 @@ public class BankController {
     public String addAnnouncement(@Valid @ModelAttribute("announcementForm") BankAnnouncement bankAnnouncement,
                                   BindingResult bindingResult,
                                   Model model) {
-
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("announcementError", ERROR_MESSAGE);
+            return "bank-settings";
+        }
         bankService.addAnnouncement(bankAnnouncement);
         return "redirect:/bank/settings";
 
