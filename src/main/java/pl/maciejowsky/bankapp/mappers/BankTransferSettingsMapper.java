@@ -12,10 +12,9 @@ public class BankTransferSettingsMapper implements RowMapper<BankTransferSetting
     public BankTransferSettings mapRow(ResultSet rs, int rowNum) throws SQLException {
         return new BankTransferSettings(
                 rs.getInt("id"),
-                rs.getInt("transfer_express"),
-                rs.getInt("transfer_fast_one_min"),
-                rs.getInt("transfer_normal_two_min"),
-                rs.getDouble("discount_for_entrepreneur_in_percentage"),
+                rs.getInt("transfer_instant"),
+                rs.getInt("transfer_express_30seconds"),
+                rs.getInt("transfer_normal_one_min"),
                 DateFormatter.timestampToString(rs.getTimestamp("created_at"))
         );
     }

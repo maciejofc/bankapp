@@ -4,6 +4,7 @@ package pl.maciejowsky.bankapp.dao;
 import pl.maciejowsky.bankapp.model.FormRegisterUser;
 import pl.maciejowsky.bankapp.model.User;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 public interface UserDAO {
@@ -26,4 +27,6 @@ public interface UserDAO {
     void banUser(int userId);
 
     void unBanUser(int userId);
+
+
 }

@@ -21,4 +21,6 @@ public interface BankService {
     void changeTransferSettings(BankTransferSettings bankTransferSettings);
 
     void deleteAnnouncement(int announcementId);
+
+    //void addManager(User user)
 }

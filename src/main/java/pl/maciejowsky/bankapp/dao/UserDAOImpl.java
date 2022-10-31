@@ -1,15 +1,16 @@
 package pl.maciejowsky.bankapp.dao;
 
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
-import pl.maciejowsky.bankapp.mappers.UserRowMapper;
+import pl.maciejowsky.bankapp.mappers.UserMapper;
 import pl.maciejowsky.bankapp.model.FormRegisterUser;
 import pl.maciejowsky.bankapp.model.User;
+import pl.maciejowsky.bankapp.utils.AccountNumberGenerator;
 
+import java.math.BigDecimal;
 import java.sql.Date;
 import java.sql.Timestamp;
 import java.time.Instant;
@@ -31,7 +32,7 @@ public class UserDAOImpl implements UserDAO {
 
         try {
             String sql = "SELECT * FROM users WHERE email = ?";
-            return jdbcTemplate.queryForObject(sql, new UserRowMapper(), email);
+            return jdbcTemplate.queryForObject(sql, new UserMapper(), email);
         } catch (EmptyResultDataAccessException e) {
             return null;
         }
@@ -43,7 +44,7 @@ public class UserDAOImpl implements UserDAO {
         User user;
         try {
             String sql = "SELECT * FROM users WHERE id = ?";
-            user = jdbcTemplate.queryForObject(sql, new UserRowMapper(), id);
+            user = jdbcTemplate.queryForObject(sql, new UserMapper(), id);
         } catch (EmptyResultDataAccessException e) {
             return null;
         }
@@ -60,17 +61,20 @@ public class UserDAOImpl implements UserDAO {
         Timestamp createdAt = Timestamp.from(Instant.now());
         String userRole = "user";
         String userAuthority = "account_enabled";
-        String sql = "INSERT INTO  users(full_name, birth_day,email,password,created_at,authorities,roles)  " +
-                " VALUES (?,?,?,?,?,?,?);";
+        String userType = user.getUserType().name().toLowerCase();
+        String sql = "INSERT INTO  users(full_name, birth_day,email,password,user_type,created_at,authorities,roles)  " +
+                " VALUES (?,?,?,?,?,?,?,?,?);";
         jdbcTemplate.update(sql,
                 user.getFullName(),
                 birthDay,
                 user.getEmail(),
                 user.getPassword(),
+                userType,
                 createdAt,
                 userAuthority,
                 userRole);
     }
+
 
     @Override
     public int findNumberOfUsers() {
@@ -84,7 +88,7 @@ public class UserDAOImpl implements UserDAO {
         int offsetValue = (page - 1) * RECORDS_PER_PAGE;
         String sql = "SELECT * FROM users WHERE roles ='user' OR roles='manager' LIMIT " + RECORDS_PER_PAGE + " OFFSET " + offsetValue;
         List<User> users = jdbcTemplate.query(
-                sql, new UserRowMapper()
+                sql, new UserMapper()
         );
         return users;
     }
@@ -94,7 +98,7 @@ public class UserDAOImpl implements UserDAO {
         int offsetValue = (page - 1) * RECORDS_PER_PAGE;
         String sql = "SELECT * FROM users WHERE roles ='user' OR roles='manager' ORDER BY full_name LIMIT " + RECORDS_PER_PAGE + " OFFSET " + offsetValue;
         List<User> users = jdbcTemplate.query(
-                sql, new UserRowMapper()
+                sql, new UserMapper()
         );
         return users;
     }
@@ -104,7 +108,7 @@ public class UserDAOImpl implements UserDAO {
         int offsetValue = (page - 1) * RECORDS_PER_PAGE;
         String sql = "SELECT * FROM users WHERE roles ='user' OR roles='manager' ORDER BY birth_day LIMIT " + RECORDS_PER_PAGE + " OFFSET " + offsetValue;
         List<User> users = jdbcTemplate.query(
-                sql, new UserRowMapper()
+                sql, new UserMapper()
         );
         return users;
     }
@@ -122,4 +126,6 @@ public class UserDAOImpl implements UserDAO {
         jdbcTemplate.update(sql, userId);
 
     }
+
+
 }

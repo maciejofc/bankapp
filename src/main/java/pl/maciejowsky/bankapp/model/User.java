@@ -3,6 +3,7 @@ package pl.maciejowsky.bankapp.model;
 import pl.maciejowsky.bankapp.model.enums.UserType;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -20,6 +21,7 @@ public class User implements Serializable {
     private String password;
 
     private UserType userType;
+
     private String createdAt;
     private String updatedAt;
 
@@ -27,7 +29,7 @@ public class User implements Serializable {
     private String roles;
     private boolean isLocked;
 
-    private boolean isOnline=false;
+    private boolean isOnline = false;
 
     public boolean isOnline() {
         return isOnline;
@@ -115,6 +117,7 @@ public class User implements Serializable {
     public void setUserType(UserType userType) {
         this.userType = userType;
     }
+
 
     public String getCreatedAt() {
         return createdAt;

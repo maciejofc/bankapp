@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS `users`
+CREATE TABLE  users
 (
     `id`          int primary key auto_increment,
     `full_name`   varchar(255),

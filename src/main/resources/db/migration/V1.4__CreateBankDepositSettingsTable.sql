@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS `bank_deposit_settings`
+CREATE TABLE  bank_deposit_settings
 (
     `id`                      int primary key auto_increment,
     `name`                    varchar(200)                    default 'New deposit variant',

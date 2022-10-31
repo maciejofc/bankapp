@@ -5,9 +5,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import pl.maciejowsky.bankapp.dao.UserAccountDAO;
 import pl.maciejowsky.bankapp.dao.UserDAO;
 import pl.maciejowsky.bankapp.exceptions.UserAlreadyExistException;
 import pl.maciejowsky.bankapp.model.FormRegisterUser;
+import pl.maciejowsky.bankapp.model.User;
 import pl.maciejowsky.bankapp.service.UserService;
 
 import javax.validation.Valid;
@@ -16,26 +18,38 @@ import java.util.Arrays;
 import java.util.List;
 
 @Controller
+@SessionAttributes({"loggedInUserId", "loggedInUserAccountNumber"})
 public class UserController {
-    private List<String> listUserType = Arrays.asList("REGULAR", "ENTREPRENEUR");
+    private static final List<String> LIST_USER_TYPE = Arrays.asList("REGULAR", "ENTREPRENEUR");
     @Autowired
     UserService userService;
 
     @Autowired
     UserDAO userDAO;
 
-
-
+    @Autowired
+    UserAccountDAO accountDAO;
 
     @GetMapping("/index")
     public String home() {
         return "index";
     }
 
+    @GetMapping("/save-user-id")
+    public String saveIdToSession(Principal principal, Model model) {
+
+        User user = userDAO.findUserByEmail(principal.getName());
+        int id = user.getId();
+        model.addAttribute("loggedInUserId", id);
+        if (user.getRoles().equals("user"))
+            model.addAttribute("loggedInUserAccountNumber", accountDAO.getAccountNumberByUserId(id));
+        return "redirect:/index";
+    }
+
     @GetMapping("/register")
     public String goToRegisterPage(Model model) {
         model.addAttribute("userForm", new FormRegisterUser());
-        model.addAttribute("listUserType", listUserType);
+        model.addAttribute("listUserType", LIST_USER_TYPE);
         return "register";
     }
 
@@ -44,7 +58,7 @@ public class UserController {
                                BindingResult bindingResult,
                                Model model) {
         if (bindingResult.hasErrors()) {
-            model.addAttribute("listUserType", listUserType);
+            model.addAttribute("listUserType", LIST_USER_TYPE);
             return "register";
         }
         try {
@@ -53,10 +67,10 @@ public class UserController {
         } catch (UserAlreadyExistException e) {
             bindingResult.rejectValue("email", null, e.getMessage());
             model.addAttribute("userForm", user);
-            model.addAttribute("listUserType", listUserType);
+            model.addAttribute("listUserType", LIST_USER_TYPE);
             return "register";
         }
-        return "redirect:/login?registerSuccess=true";
+        return "redirect:/login?registerSuccess";
     }
 
     @GetMapping("/login")
@@ -96,7 +110,6 @@ public class UserController {
     }
 
 
-
     @GetMapping("/user/ban")
     public String banUser(Model model, @RequestParam int userId) {
         userService.changeUserLockProperty(userId, true);
@@ -110,8 +123,6 @@ public class UserController {
         model.addAttribute("user", userService.getUserById(userId));
         return "user";
     }
-
-
 
 
 }

@@ -10,4 +10,10 @@ public class DateFormatter {
                 .toLocalDateTime().toString().replace("T", " ");
 
     }
+//    public static String stringToTimestamp(String string) {
+//        return timestamp.toInstant()
+//                .atZone(ZoneId.systemDefault())
+//                .toLocalDateTime().toString().replace("T", " ");
+//
+//    }
 }

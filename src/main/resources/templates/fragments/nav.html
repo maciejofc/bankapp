@@ -1,7 +1,7 @@
 <nav aria-label="Fourth navbar example" class="navbar navbar-expand-md navbar-dark bg-dark"
      sec:authorize="isAuthenticated()"
      th:fragment="menu" xmlns:sec="http://www.w3.org/1999/xhtml">
-    <div class="container border">
+    <div class="container ">
 
         <button class="navbar-toggler"
                 data-bs-target="#navbarsExample04" data-bs-toggle="collapse" type="button">
@@ -18,10 +18,10 @@
                     <a class="nav-link" sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{~/bank/settings}">Bank settings</a>
                 </li>
                 <li class="nav-item">
-                    <a style="padding-left: 0" class="nav-link" sec:authorize="hasAnyRole('ROLE_USER','ROLE_MANAGER')" th:href="@{~/bank/settings}">My profile</a>
+                    <a style="padding-left: 0" class="nav-link" sec:authorize="hasAnyRole('ROLE_USER','ROLE_MANAGER')" th:href="@{~/profile}">My profile</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" sec:authorize="hasRole('ROLE_USER')" th:href="@{~/transfers}">Transfers</a>
+                    <a class="nav-link" sec:authorize="hasRole('ROLE_USER')" th:href="@{~/transfer}">Transfers</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" sec:authorize="hasRole('ROLE_USER')" th:href="@{~/deposits}">Deposits</a>
