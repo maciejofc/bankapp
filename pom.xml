@@ -92,6 +92,7 @@
 					<user>root</user>
 					<password>mysqlpassword123@</password>
 				</configuration>
+
 			</plugin>
 		</plugins>
 	</build>

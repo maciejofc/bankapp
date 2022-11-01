@@ -1,4 +1,3 @@
-
 const contacts = document.getElementsByClassName("contact-data");
 for (let i = 0; i < contacts.length; i++) {
     contacts[i].addEventListener("click", function () {
@@ -11,6 +10,11 @@ for (let i = 0; i < contacts.length; i++) {
 
     })
 }
+
+
+
+
+
 
 
 

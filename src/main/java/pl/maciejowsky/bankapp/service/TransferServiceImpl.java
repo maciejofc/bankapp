@@ -5,12 +5,12 @@ import org.springframework.stereotype.Service;
 import pl.maciejowsky.bankapp.dao.BankProfitDAO;
 import pl.maciejowsky.bankapp.dao.TransferDAO;
 import pl.maciejowsky.bankapp.dao.UserAccountDAO;
-import pl.maciejowsky.bankapp.dao.UserDAO;
 import pl.maciejowsky.bankapp.exceptions.ContactException;
 import pl.maciejowsky.bankapp.exceptions.TransferException;
 import pl.maciejowsky.bankapp.model.Contact;
 import pl.maciejowsky.bankapp.model.FormTransfer;
 import pl.maciejowsky.bankapp.model.Transfer;
+import pl.maciejowsky.bankapp.model.TransferFormFilter;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
@@ -18,6 +18,7 @@ import java.time.Instant;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.stream.Collectors;
 
 @Service
 public class TransferServiceImpl implements TransferService {
@@ -93,19 +94,25 @@ public class TransferServiceImpl implements TransferService {
         return transferDAO.findUserContacts(userOwnerId);
     }
 
+    public void setRelationOfTransfers(List<Transfer> transfers, String accountNumberOfHistoryOwner) {
+        transfers.stream().forEach(transfer -> {
+            transfer.setSent(transfer.getFromAccount().equals(accountNumberOfHistoryOwner));
+        });
+    }
+
 
     @Override
-    public List<Transfer> findTransferHistoryForUser(String username) {
-//        int userId = userDAO.findUserByEmail(username).getId();
-//        String accountNumber = userAccountDAO.getAccountNumberByUserId(userId);
-//        return transferDAO.findTransfersForUser(accountNumber);
-        return null;
+    public List<Transfer> getTransferHistoryForUser(int userId, TransferFormFilter transferFormFilter) {
+        String accountNumberOfHistoryOwner = userAccountDAO.getAccountNumberByUserId(userId);
+        List<Transfer> transfersForUser = transferDAO.findTransfersForUser(accountNumberOfHistoryOwner);
+        setRelationOfTransfers(transfersForUser, accountNumberOfHistoryOwner);
+        List<Transfer> collect = transfersForUser.stream().filter(transfer -> transfer.isEligibleForPossibleFilters(transferFormFilter)).collect(Collectors.toList());
+        return collect;
+
     }
 
     public void addUserToContact(Contact contact) throws ContactException {
-
         List<Contact> userContacts = transferDAO.findUserContacts(contact.getContactOwnerId());
-
         boolean isTheSameName = userContacts.stream().anyMatch(c -> c.getName().equals(contact.getName()));
         boolean isTheSameAccountNumber = userContacts.stream().anyMatch(c -> c.getAccountNumber().equals(contact.getAccountNumber()));
 

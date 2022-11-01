@@ -13,7 +13,7 @@ public interface UserAccountDAO {
 
     boolean checkIfAccountNumberExist(String accountNumber);
 
-    String createNonExistingAccountNumber();
+
 
     void modifyBalanceOnAccount(String accountNumber,BigDecimal moneyToManipulate, AccountBalanceManipulation accountBalanceManipulation);
 

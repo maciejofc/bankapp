@@ -34,8 +34,8 @@ public class TransferDAOImpl implements TransferDAO {
 
     @Override
     public List<Transfer> findTransfersForUser(String accountNumber) {
-        String sql = "SELECT * FROM transfers WHERE from_account=? OR to_account = ?";
-        return jdbcTemplate.query(sql, new TransferMapper(), accountNumber, accountNumber);
+        String sql = "SELECT * FROM transfers WHERE from_account=? OR to_account = ? ORDER BY date_of_receiving DESC";
+        return jdbcTemplate.query(sql, new TransferMapper(), accountNumber,accountNumber);
 
     }
 

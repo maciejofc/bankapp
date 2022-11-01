@@ -22,8 +22,8 @@ public class TransferMapper implements RowMapper<Transfer> {
                 rs.getString("to_account"),
                 rs.getBigDecimal("amount"),
                 TransferType.valueOf(rs.getString("transfer_type").toUpperCase()),
-                DateFormatter.timestampToString(rs.getTimestamp("sent_at")),
-                DateFormatter.timestampToString(rs.getTimestamp("receive_at"))
+                DateFormatter.timestampToString(rs.getTimestamp("date_of_execution")),
+                DateFormatter.timestampToString(rs.getTimestamp("date_of_receiving"))
         );
     }
 }

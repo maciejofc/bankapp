@@ -4,11 +4,15 @@ import pl.maciejowsky.bankapp.exceptions.ContactException;
 import pl.maciejowsky.bankapp.exceptions.TransferException;
 import pl.maciejowsky.bankapp.model.Contact;
 import pl.maciejowsky.bankapp.model.FormTransfer;
+import pl.maciejowsky.bankapp.model.Transfer;
+import pl.maciejowsky.bankapp.model.TransferFormFilter;
 
 import java.math.BigDecimal;
 import java.util.List;
 
 public interface TransferService {
+
+    List<Transfer> getTransferHistoryForUser(int userId, TransferFormFilter transferFormFilter);
 
     void addUserToContact(Contact contact) throws ContactException;
 
