@@ -2,7 +2,7 @@
 <html xmlns:sec="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="fragments/bootstrap :: baseHead(~{::title}, ~{::link})">
     <title>User</title>
-    <link href="#" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/styles.css}">
 </head>
 
 <body class="d-flex flex-column min-vh-100">
@@ -14,9 +14,10 @@
 <nav th:replace="fragments/nav :: menu"></nav>
 
 <div class="container ">
-        <h1>User</h1>
-        <div class="border rounded-3 col-6  bg-white my-4 p-4">
-            <div>
+    <div class="row">
+        <div class="col-12 col-sm-11 col-md-7 col-xl-5">
+            <h1>User</h1>
+            <div class="rounded bg-white my-4 p-4">
                 <div class="d-flex flex-column">
                     <div class="row mx-2 py-2 border-bottom">
                         <div class="p-0  col-4">Full Name</div>
@@ -68,120 +69,127 @@
                 </div>
             </div>
         </div>
-        <div class="border rounded my-4 px-1 py-3">
-            <div class="col-12">
-                <h1 th:text="'You have already earned : ' + ${moneyEarned} + ' $'" class="border"></h1>
-                <div style="max-height: 700px;" class="overflow-auto m-3">
-                    <div class="table-responsive">
-                        <table class="table">
-                            <thead>
-                            <tr>
-                                <th>Interest rate</th>
-                                <th>Deposit amount</th>
-                                <th>Minimum Deposit time</th>
-                                <th>Money to withdraw</th>
-                                <th>Deposit status</th>
-                                <th>Started at</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr th:each="depositRow : ${depositHistory}">
-                                <td th:text="${depositRow.interestRate} + ' %'"></td>
-                                <td th:text="${depositRow.depositAmount} + '$'"></td>
-                                <td th:text="${depositRow.depositTime} + ' min'"></td>
-                                <td th:text="${depositRow.moneyToWithdraw} + '$'"></td>
-                                <td th:text="${depositRow.depositStatus}"></td>
-                                <td th:text="${depositRow.startDate}"></td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="border rounded my-4 px-1 py-3">
-            <div class=" col-12">
-                <h3 class>Filters</h3>
-                <form class=" m-3" method="get" th:object="${transferFormFilter}"
-                      th:action="@{/user/{id}(id=${user.id})}">
-                    <!--                    ---------AMOUNT FILTER------->
-                    <div class="form-check ">
-                        <input class="form-check-input filter-checkbox" th:field="*{amountFilter}" type="checkbox">
-                        <label class="form-check-label">by amount</label>
-                        <div class="row filter-input">
-                            <div class="col-4 col-md-2 form-group">
-                                <input type="number" class="form-control " th:field="*{fromAmount}"
-                                       placeholder="Enter lower limit">
-                            </div>
-                            <div class="col-4 col-md-2 form-group">
-                                <input type="number" class="form-control " th:field="*{toAmount}"
-                                       placeholder="Enter upper limit">
-                            </div>
-                        </div>
-                    </div>
-                    <!--                    ---------NUMBER FILTER------->
-                    <div class=" form-check">
-                        <input class="form-check-input filter-checkbox" th:field="*{accountNumberFilter}"
-                               type="checkbox">
-                        <label class="form-check-label">by account number</label>
-                        <div class="row filter-input">
-                            <div class="col-8 col-md-4 form-group">
-                                <input type="text" class="form-control" th:field="*{accountNumber}"
-                                       placeholder="Enter account number">
-                            </div>
-                        </div>
-                    </div>
-                    <!--                    ---------DATE  FILTER------->
-                    <div class=" form-check">
-                        <input class="form-check-input filter-checkbox" th:field="*{dateFilter}" type="checkbox"
-                               value="">
-                        <label class="form-check-label">by date</label>
-                        <div class="row filter-input">
-                            <div class="col-4 col-md-2  form-group">
-                                <input type="date" class="form-control" th:field="*{fromDate}"
-                                       placeholder="Select from date">
-                            </div>
-                            <div class="col-4 col-md-2  form-group">
 
-                                <input type="date" class="form-control" th:field="*{toDate}"
-                                       placeholder="Select to date">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="d-grid gap-0 col-3 mx-auto">
-                        <button class="btn btn-primary btn-sm border mt-2" type="submit">Search</button>
-                    </div>
-                </form>
-                <div style="max-height: 700px;" class="overflow-auto m-3">
-                    <div class="table-responsive">
-                        <table class="table">
-                            <thead>
-                            <tr>
-                                <th>Transfer relation</th>
-                                <th>Account</th>
-                                <th>Amount</th>
-                                <th>Received at</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr th:each="transferRow : ${transferHistory}">
-                                <td th:text="${transferRow.isSent()} ? 'Sent to' : 'Received from'"></td>
-                                <td th:text="${transferRow.toAccount}"></td>
-                                <td th:text="${transferRow.amount}"></td>
-                                <td th:text="${transferRow.receiveAt}"></td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </div>
+    </div>
+
+
+
+    <div class="rounded bg-white my-4 px-1 py-3">
+        <div class="col-12">
+            <div style="max-height: 700px;" class="overflow-auto m-3">
+                <h1 th:text="'You have already earned : ' + ${moneyEarned} + ' $'" class="border"></h1>
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th>Interest rate</th>
+                            <th>Deposit amount</th>
+                            <th>Minimum Deposit time</th>
+                            <th>Money to withdraw</th>
+                            <th>Deposit status</th>
+                            <th>Started at</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="depositRow : ${depositHistory}">
+                            <td th:text="${depositRow.interestRate} + ' %'"></td>
+                            <td th:text="${depositRow.depositAmount} + '$'"></td>
+                            <td th:text="${depositRow.depositTime} + ' min'"></td>
+                            <td th:text="${depositRow.moneyToWithdraw} + '$'"></td>
+                            <td th:text="${depositRow.depositStatus}"></td>
+                            <td th:text="${depositRow.startDate}"></td>
+                        </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
-            <select onchange="drawChartBySelectedYear()" class="form-control" id="dropDownYearList">
-                <option th:each="year,iter : ${yearsOfActivity}" th:value="${iter.index}" th:text="${year}">
-                </option>
-            </select>
-            <div id="chart_div" style="width: 900px; height: 500px;">
+        </div>
+    </div>
+    <div class="rounded bg-white my-4 px-1 py-3">
+        <div class="col-12">
+            <form class=" m-3" method="get" th:object="${transferFormFilter}"
+                  th:action="@{/user/{id}(id=${user.id})}">
+                <h3 class>Filters</h3>
+                <!--                    ---------AMOUNT FILTER------->
+                <div class="form-check ">
+                    <input class="form-check-input filter-checkbox" th:field="*{amountFilter}" type="checkbox">
+                    <label class="form-check-label">by amount</label>
+                    <div class="row filter-input">
+                        <div class="col-4 col-md-2 form-group">
+                            <input type="number" class="form-control " th:field="*{fromAmount}"
+                                   placeholder="Enter lower limit">
+                        </div>
+                        <div class="col-4 col-md-2 form-group">
+                            <input type="number" class="form-control " th:field="*{toAmount}"
+                                   placeholder="Enter upper limit">
+                        </div>
+                    </div>
+                </div>
+                <!--                    ---------NUMBER FILTER------->
+                <div class=" form-check">
+                    <input class="form-check-input filter-checkbox" th:field="*{accountNumberFilter}"
+                           type="checkbox">
+                    <label class="form-check-label">by account number</label>
+                    <div class="row filter-input">
+                        <div class="col-8 col-md-4 form-group">
+                            <input type="text" class="form-control" th:field="*{accountNumber}"
+                                   placeholder="Enter account number">
+                        </div>
+                    </div>
+                </div>
+                <!--                    ---------DATE  FILTER------->
+                <div class=" form-check">
+                    <input class="form-check-input filter-checkbox" th:field="*{dateFilter}" type="checkbox"
+                           value="">
+                    <label class="form-check-label">by date</label>
+                    <div class="row filter-input">
+                        <div class="col-4 col-md-2  form-group">
+                            <input type="date" class="form-control" th:field="*{fromDate}"
+                                   placeholder="Select from date">
+                        </div>
+                        <div class="col-4 col-md-2  form-group">
+
+                            <input type="date" class="form-control" th:field="*{toDate}"
+                                   placeholder="Select to date">
+                        </div>
+                    </div>
+                </div>
+                <div class="d-grid my-2">
+                    <button type="button" class="btn btn-primary btn-block">Search</button>
+                </div>
+            </form>
+            <div style="max-height: 700px;" class="overflow-auto m-3">
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th>Transfer relation</th>
+                            <th>Account</th>
+                            <th>Amount</th>
+                            <th>Received at</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="transferRow : ${transferHistory}">
+                            <td th:text="${transferRow.isSent()} ? 'Sent to' : 'Received from'"></td>
+                            <td th:text="${transferRow.toAccount}"></td>
+                            <td th:text="${transferRow.amount}"></td>
+                            <td th:text="${transferRow.receiveAt}"></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
+                <div class="my-4 p-4 overflow-auto">
+                    <select onchange="drawChartBySelectedYear()" class="form-control" id="dropDownYearList">
+                        <option th:each="year,iter : ${yearsOfActivity}" th:value="${iter.index}" th:text="${year}">
+                        </option>
+                    </select>
+                    <div class="mt-2" id="chart_div" style="width: 900px; height: 500px;">
+                    </div>
+                </div>
+    </div>
 </div>
 <footer th:replace="fragments/footer :: footer">
 </footer>
