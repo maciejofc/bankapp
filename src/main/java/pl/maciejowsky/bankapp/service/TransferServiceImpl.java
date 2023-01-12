@@ -15,9 +15,7 @@ import pl.maciejowsky.bankapp.model.TransferFormFilter;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.Instant;
-import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -108,8 +106,8 @@ public class TransferServiceImpl implements TransferService {
         setRelationOfTransfers(transfersForUser, accountNumberOfHistoryOwner);
         List<Transfer> collect = transfersForUser.stream().filter(transfer -> transfer.isEligibleForPossibleFilters(transferFormFilter)).collect(Collectors.toList());
         return collect;
-
     }
+
 
     public void addUserToContact(Contact contact) throws ContactException {
         List<Contact> userContacts = transferDAO.findUserContacts(contact.getContactOwnerId());
@@ -125,5 +123,87 @@ public class TransferServiceImpl implements TransferService {
             transferDAO.saveContact(contact);
 
     }
+
+
+    public List<Integer> getActiveTransferYears(int userId) {
+        Set<Integer> setOfYears = getTransferHistoryForUser(userId, new TransferFormFilter()).stream()
+                .map(transfer -> Integer.valueOf(transfer.getReceiveAt().substring(0, 4)))
+                .collect(Collectors.toSet());
+        List<Integer> arr = new ArrayList<>(setOfYears);
+        Collections.sort(arr, Collections.reverseOrder());
+        return arr;
+    }
+
+    public List<List<List<Object>>> getChartData(int userId) {
+        List<List<List<Object>>> dataChartWithAllYears = new ArrayList<>();
+        List<Transfer> transferHistoryForUser = getTransferHistoryForUser(userId, new TransferFormFilter());
+
+
+        List<Integer> activeYears = getActiveTransferYears(userId);
+
+        for (int indexOfYear = 0; indexOfYear < activeYears.size(); indexOfYear++) {
+            // years are sorted descending
+            // 2022 - 0 index
+            // 2021 - 1 index
+
+            Integer activeTransferYear = activeYears.get(indexOfYear);
+
+            //transfers only belonging to current active transfer year
+            List<Transfer> dataForCurrentYear = transferHistoryForUser.stream()
+                    //filtering by current year
+                    .filter(transfer -> transfer.getReceiveAt().split("-")[0].equals(String.valueOf(activeTransferYear)))
+                    .collect(Collectors.toList());
+
+
+            dataForCurrentYear.forEach(transfer -> System.out.println(transfer.getReceiveAt()));
+            //applying expenses and incomes to months in indexing year
+
+            List<List<Object>> month12Chart = createEmpty12MonthlyChart();
+            dataForCurrentYear.forEach(transfer -> {
+                int numberOfMonth = Integer.valueOf(retrieveMonthNumberFromStringDate(transfer.getReceiveAt()));
+                if (transfer.isSent()) {
+                    BigDecimal previousExpensesInGivenMonth = (BigDecimal) month12Chart.get(numberOfMonth - 1).get(1);
+                    BigDecimal previousAndCurrentlyExpensesInGivenMonth = previousExpensesInGivenMonth.add(transfer.getAmount());
+                    month12Chart.get(numberOfMonth - 1).set(1, previousAndCurrentlyExpensesInGivenMonth);
+
+                } else {
+                    //
+                    BigDecimal previousIncomeInGivenMonth = (BigDecimal) month12Chart.get(numberOfMonth - 1).get(2);
+                    BigDecimal previousAndCurrentlyIncomesInGivenMonth = previousIncomeInGivenMonth.add(transfer.getAmount());
+                    month12Chart.get(numberOfMonth - 1).set(2, previousAndCurrentlyIncomesInGivenMonth);
+                }
+            });
+            //saving all 12 months to list of years
+            dataChartWithAllYears.add(month12Chart);
+        }
+
+        return dataChartWithAllYears;
+    }
+
+    private List<List<Object>> createEmpty12MonthlyChart() {
+        List<List<Object>> onlyMonthsChart = new ArrayList<>();
+        for (int i = 1; i <= 12; i++) {
+            int monthNumber = i;
+            List<Object> months = new ArrayList<>();
+            // month index =0 in nested list
+            months.add(0, monthNumber);
+            // expenses = index 1 in nested list
+            months.add(1, BigDecimal.ZERO);
+            //incomes = index 2 in nested list
+            months.add(2, BigDecimal.ZERO);
+
+            onlyMonthsChart.add(months);
+        }
+        return onlyMonthsChart;
+    }
+
+    private String retrieveMonthNumberFromStringDate(String fullDate) {
+
+        String onlyMonth = fullDate.split("-")[1];
+        if (onlyMonth.startsWith("0"))
+            return onlyMonth.substring(1, 2);
+        return onlyMonth;
+    }
+
 
 }

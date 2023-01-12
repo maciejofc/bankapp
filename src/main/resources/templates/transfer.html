@@ -13,27 +13,24 @@
 </div>
 <nav th:replace="fragments/nav :: menu"></nav>
 
-<div class="container  mb-3">
-<h1 class=""> Transfers</h1>
-        <div class="d-flex flex-wrap align-items-start " style="gap:1rem;">
-            <div class="clickable-div border rounded">
-                <a class="p-1"
-                   th:href="@{~/transfer/make}">Make transfer</a>
-            </div>
-            <div class="clickable-div border rounded">
-                <a class="p-1"
-                   th:href="@{~/transfer/history}">Transfer History</a>
-            </div>
-
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <h1>Transfers</h1>
         </div>
-
-
-
+    </div>
+        <div class="d-flex flex-wrap  " style="gap:1rem;">
+            <div class="clickable-div  rounded bg-white">
+                <a class="text-reset p-2"
+                   th:href="@{/transfer/make}">Make transfer</a>
+            </div>
+            <div class="clickable-div  rounded bg-white">
+                <a class="text-reset p-2"
+                   th:href="@{/transfer/history}">Transfer History</a>
+            </div>
+        </div>
 </div>
-
-
 <footer th:replace="fragments/footer :: footer">
-
 </footer>
 </body>
 </html>

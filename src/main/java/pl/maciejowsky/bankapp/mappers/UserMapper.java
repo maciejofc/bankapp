@@ -5,7 +5,6 @@ import pl.maciejowsky.bankapp.model.enums.UserType;
 import pl.maciejowsky.bankapp.model.User;
 import pl.maciejowsky.bankapp.utils.DateFormatter;
 
-import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;

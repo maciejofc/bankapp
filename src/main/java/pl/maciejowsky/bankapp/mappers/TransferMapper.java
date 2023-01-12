@@ -1,15 +1,13 @@
 package pl.maciejowsky.bankapp.mappers;
 
 import org.springframework.jdbc.core.RowMapper;
-import pl.maciejowsky.bankapp.model.BankAnnouncement;
 import pl.maciejowsky.bankapp.model.Transfer;
-import pl.maciejowsky.bankapp.model.enums.AnnouncementVisibility;
 import pl.maciejowsky.bankapp.model.enums.TransferType;
-import pl.maciejowsky.bankapp.model.enums.UserType;
 import pl.maciejowsky.bankapp.utils.DateFormatter;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.Instant;
 
 public class TransferMapper implements RowMapper<Transfer> {
 

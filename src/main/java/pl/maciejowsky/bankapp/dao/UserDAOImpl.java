@@ -3,14 +3,13 @@ package pl.maciejowsky.bankapp.dao;
 
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Component;
 
 import pl.maciejowsky.bankapp.mappers.UserMapper;
-import pl.maciejowsky.bankapp.model.FormRegisterUser;
 import pl.maciejowsky.bankapp.model.User;
-import pl.maciejowsky.bankapp.utils.AccountNumberGenerator;
 
-import java.math.BigDecimal;
 import java.sql.Date;
 import java.sql.Timestamp;
 import java.time.Instant;
@@ -22,9 +21,11 @@ public class UserDAOImpl implements UserDAO {
     private final static int RECORDS_PER_PAGE = 10;
 
     private final JdbcTemplate jdbcTemplate;
+    private final SimpleJdbcInsert insertIntoUser;
 
     public UserDAOImpl(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
+        insertIntoUser = new SimpleJdbcInsert(jdbcTemplate).withTableName("users").usingGeneratedKeyColumns("id");
     }
 
     @Override
@@ -52,27 +53,48 @@ public class UserDAOImpl implements UserDAO {
     }
 
     @Override
-    public void saveUser(FormRegisterUser user) {
+    public int saveUser(User user) {
         Date birthDay = null;
         if (user.getBirthDay() != null) {
             birthDay = Date.valueOf(user.getBirthDay());
 
         }
         Timestamp createdAt = Timestamp.from(Instant.now());
-        String userRole = "user";
-        String userAuthority = "account_enabled";
-        String userType = user.getUserType().name().toLowerCase();
-        String sql = "INSERT INTO  users(full_name, birth_day,email,password,user_type,created_at,authorities,roles)  " +
-                " VALUES (?,?,?,?,?,?,?,?,?);";
-        jdbcTemplate.update(sql,
-                user.getFullName(),
-                birthDay,
-                user.getEmail(),
-                user.getPassword(),
-                userType,
-                createdAt,
-                userAuthority,
-                userRole);
+        String userRole = user.getRoles();
+        String userAuthority = user.getAuthorities();
+        String userType;
+        if (user.getUserType() == null) {
+            userType = null;
+        } else {
+            userType = user.getUserType().name().toLowerCase();
+        }
+        MapSqlParameterSource params = new MapSqlParameterSource();
+
+        params.addValue("full_name", user.getFullName())
+                .addValue("birth_day", birthDay)
+                .addValue("email", user.getEmail())
+                .addValue("password", user.getPassword())
+                .addValue("user_type", userType)
+                .addValue("created_at", createdAt)
+                .addValue("authorities", userAuthority)
+                .addValue("roles", userRole);
+
+        Number newId = insertIntoUser.executeAndReturnKey(params);
+
+
+//
+//        String sql = "INSERT INTO  users(full_name, birth_day,email,password,user_type,created_at,authorities,roles)  " +
+//                " VALUES (?,?,?,?,?,?,?,?);";
+//        jdbcTemplate.update(sql,
+//                user.getFullName(),
+//                birthDay,
+//                user.getEmail(),
+//                user.getPassword(),
+//                userType,
+//                createdAt,
+//                userAuthority,
+//                userRole);
+        return newId.intValue();
     }
 
 
@@ -127,5 +149,15 @@ public class UserDAOImpl implements UserDAO {
 
     }
 
+    @Override
+    public void updateEmail(int userId, String newEmail) {
+        String sql = "UPDATE users" + " SET email = ? AND updated_at =? WHERE id = ?";
+        jdbcTemplate.update(sql, newEmail, Instant.now(), userId);
 
+    }
+
+    @Override
+    public void updatePassword(int userId, String newPassword) {
+
+    }
 }

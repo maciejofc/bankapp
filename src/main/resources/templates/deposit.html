@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:sec="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/bootstrap :: baseHead(~{::title}, ~{::link})">
+    <title>Deposit</title>
+    <link href="styles.css" rel="stylesheet">
+</head>
+
+<body class="d-flex flex-column min-vh-100">
+
+
+<div th:replace="fragments/header :: header">
+
+</div>
+<nav th:replace="fragments/nav :: menu"></nav>
+
+<div class="container">
+    <h1>Earning</h1>
+    <div class="d-flex flex-wrap align-items-start gap-3">
+        <div class="bg-white clickable-div border rounded">
+            <a class="text-reset p-2"
+               th:href="@{/deposit/make}">Make deposit</a>
+        </div>
+        <div class="bg-white clickable-div  rounded">
+            <a class="text-reset p-2"
+               th:href="@{/deposit/history}">Deposit history</a>
+        </div>
+        <div class="bg-white clickable-div  rounded">
+            <a class="text-reset p-2"
+               th:href="@{/request}">Funds requests</a>
+        </div>
+    </div>
+</div>
+<footer th:replace="fragments/footer :: footer">
+</footer>
+</body>
+</html>

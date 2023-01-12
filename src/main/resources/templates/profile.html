@@ -1,0 +1,75 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head th:replace="fragments/bootstrap :: baseHead(~{::title}, ~{::link})">
+
+    <title>Profile</title>
+    <link href="styles.css" rel="stylesheet">
+</head>
+<body class="d-flex flex-column min-vh-100">
+
+<div th:replace="fragments/header :: header">
+
+</div>
+<nav th:replace="fragments/nav :: menu"></nav>
+
+<div class="container ">
+    <div class="row">
+        <div class="col-12 col-sm-11 col-md-7 col-xl-5">
+            <h1>Profile</h1>
+            <div class="rounded bg-white my-4 p-4">
+                <div>
+                    <div class="d-flex flex-column">
+                        <div class="row mx-2 py-2 border-bottom">
+                            <div class="p-0  col-4">Full Name</div>
+                            <div class=" col-8 text-muted" th:text="${user.fullName}"></div>
+                        </div>
+                        <div class="row mx-2 py-2 border-bottom">
+                            <div class="p-0 col-4">Email</div>
+                            <div class=" col-8 text-muted" th:text="${user.email}"></div>
+                        </div>
+                        <div class="row mx-2 py-2 border-bottom">
+                            <div class="p-0 col-4">Date of birth</div>
+                            <div class=" col-8 text-muted" th:text="${user.birthDay}"></div>
+                        </div>
+                        <div class="row mx-2 py-2  border-bottom">
+                            <div class="p-0 col-4">User type</div>
+                            <div class=" col-8 text-muted" th:if="${user.userType!=null}" th:text="${user.userType}"></div>
+                            <div class=" col-8 text-muted" th:if="${user.userType==null}">Manager</div>
+                        </div>
+                        <div class="row mx-2 py-2 border-bottom">
+                            <div class="p-0 col-4">Joined</div>
+                            <div class=" col-8 text-muted" th:text="${user.createdAt}"></div>
+                        </div>
+                        <div class="row mx-2 py-2  border-bottom">
+                            <div class="p-0 col-4">Updated</div>
+                            <div class=" col-8 text-muted" th:text="${user.updatedAt}"></div>
+                        </div>
+                    </div>
+                    <div sec:authorize="hasRole('ROLE_USER')">
+
+                        <div class="row mx-2 py-2 border-bottom">
+                            <div class="p-0 col-4">Account number</div>
+                            <div class=" col-8 text-muted  flex-fill" th:text="${userAccount.accountNumber}"></div>
+                        </div>
+                        <div class="row mx-2 py-2 border-bottom">
+                            <div class="p-0 col-4">Balance</div>
+                            <div class=" col-8 text-muted  flex-fill" th:text="${userAccount.balance}"></div>
+                        </div>
+                    </div>
+                    <div class="my-3 mx-2 ">
+                        <div class="text-end">
+                            <a class="text-center" th:href="@{/profile/edit/email}">Edit email</a>
+                        </div>
+                        <div class="text-end">
+                            <a th:href="@{/profile/edit/password}">Edit password</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<footer th:replace="fragments/footer :: footer">
+</footer>
+</body>
+</html>

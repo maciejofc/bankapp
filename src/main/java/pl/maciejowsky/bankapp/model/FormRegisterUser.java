@@ -30,6 +30,8 @@ public class FormRegisterUser {
     private String confirmPassword;
     private UserType userType;
 
+
+
     public String getFullName() {
         return fullName;
     }
@@ -82,7 +84,6 @@ public class FormRegisterUser {
 
     private void checkPassword() {
         if (this.password == null || this.confirmPassword == null) {
-            return;
         } else if (!this.password.equals(confirmPassword)) {
             this.confirmPassword = null;
         }

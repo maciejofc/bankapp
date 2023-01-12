@@ -14,37 +14,232 @@
 <nav th:replace="fragments/nav :: menu"></nav>
 
 <div class="container ">
-    <h1>User </h1>
-    <div th:if="${user==null}">You have no permission for that user</div>
-    <div th:unless="${user==null}">
-        <div class="d-flex flex-column">
-            <p th:text="${user.fullName}"></p>
-            <p th:text="${user.email}"></p>
-            <p th:text="${user.birthDay}"></p>
-            <p th:text="${user.userType}"></p>
-            <p th:text="${user.createdAt}"></p>
-            <p th:text="${user.updatedAt}"></p>
-            <p th:if="${user.isLocked}">
-                User banned
-                <a class="btn btn-danger" role="button" sec:authorize="hasRole('ADMIN')"
-                   th:href="@{~/user/unban(userId=${user.id})}" th:text="Unban"></a>
-            </p>
-            <p th:unless="${user.isLocked}">
-                User not banned
-
-                <a class="btn btn-danger" role="button" sec:authorize="hasRole('ADMIN')"
-                   th:href="@{~/user/ban(userId=${user.id})}" th:text="Ban"></a>
-            </p>
-
-
+        <h1>User</h1>
+        <div class="border rounded-3 col-6  bg-white my-4 p-4">
+            <div>
+                <div class="d-flex flex-column">
+                    <div class="row mx-2 py-2 border-bottom">
+                        <div class="p-0  col-4">Full Name</div>
+                        <div class=" col-8 text-muted" th:text="${user.fullName}"></div>
+                    </div>
+                    <div class="row mx-2 py-2 border-bottom">
+                        <div class="p-0 col-4">Email</div>
+                        <div class=" col-8 text-muted" th:text="${user.email}"></div>
+                    </div>
+                    <div th:if="${userAccount!=null}" class="row mx-2 py-2 border-bottom">
+                        <div class="p-0 col-4">Account number</div>
+                        <div class=" col-8 text-muted" th:text="${userAccount.accountNumber}"></div>
+                    </div>
+                    <div th:if="${userAccount!=null}" class="row mx-2 py-2 border-bottom">
+                        <div class="p-0 col-4">Balance</div>
+                        <div class=" col-8 text-muted" th:text="${userAccount.balance}"></div>
+                    </div>
+                    <div class="row mx-2 py-2 border-bottom">
+                        <div class="p-0 col-4">Birthday</div>
+                        <div class=" col-8 text-muted" th:text="${user.birthDay}"></div>
+                    </div>
+                    <div class="row mx-2 py-2  border-bottom">
+                        <div class="p-0 col-4">User type</div>
+                        <div class=" col-8 text-muted" th:if="${user.userType!=null}" th:text="${user.userType}"></div>
+                        <div class=" col-8 text-muted" th:if="${user.userType==null}">Manager</div>
+                    </div>
+                    <div class="row mx-2 py-2  border-bottom">
+                        <div class="p-0 col-4">Created</div>
+                        <div class=" col-8 text-muted" th:text="${user.createdAt}"></div>
+                    </div>
+                    <div class="row mx-2 py-2  border-bottom">
+                        <div class="p-0 col-4">Updated</div>
+                        <div class=" col-8 text-muted  " th:text="${user.updatedAt}"></div>
+                    </div>
+                    <div th:if="${user.isLocked}" class="row mx-2 py-2  border-bottom">
+                        <div class="p-0 col-4">Ban state</div>
+                        <div class=" col-8 text-muted  "><a class="btn btn-danger" role="button"
+                                                            sec:authorize="hasRole('ADMIN')"
+                                                            th:href="@{~/user/unban(userId=${user.id})}"
+                                                            th:text="Unban"></a></div>
+                    </div>
+                    <div th:unless="${user.isLocked}" class="row mx-2 py-2  border-bottom">
+                        <div class="p-0 col-4">Ban state</div>
+                        <div class=" col-8 text-muted"><a class="btn btn-danger" role="button"
+                                                          sec:authorize="hasRole('ADMIN')"
+                                                          th:href="@{~/user/ban(userId=${user.id})}" th:text="Ban"></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-    </div>
+        <div class="border rounded my-4 px-1 py-3">
+            <div class="col-12">
+                <h1 th:text="'You have already earned : ' + ${moneyEarned} + ' $'" class="border"></h1>
+                <div style="max-height: 700px;" class="overflow-auto m-3">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <th>Interest rate</th>
+                                <th>Deposit amount</th>
+                                <th>Minimum Deposit time</th>
+                                <th>Money to withdraw</th>
+                                <th>Deposit status</th>
+                                <th>Started at</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="depositRow : ${depositHistory}">
+                                <td th:text="${depositRow.interestRate} + ' %'"></td>
+                                <td th:text="${depositRow.depositAmount} + '$'"></td>
+                                <td th:text="${depositRow.depositTime} + ' min'"></td>
+                                <td th:text="${depositRow.moneyToWithdraw} + '$'"></td>
+                                <td th:text="${depositRow.depositStatus}"></td>
+                                <td th:text="${depositRow.startDate}"></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="border rounded my-4 px-1 py-3">
+            <div class=" col-12">
+                <h3 class>Filters</h3>
+                <form class=" m-3" method="get" th:object="${transferFormFilter}"
+                      th:action="@{/user/{id}(id=${user.id})}">
+                    <!--                    ---------AMOUNT FILTER------->
+                    <div class="form-check ">
+                        <input class="form-check-input filter-checkbox" th:field="*{amountFilter}" type="checkbox">
+                        <label class="form-check-label">by amount</label>
+                        <div class="row filter-input">
+                            <div class="col-4 col-md-2 form-group">
+                                <input type="number" class="form-control " th:field="*{fromAmount}"
+                                       placeholder="Enter lower limit">
+                            </div>
+                            <div class="col-4 col-md-2 form-group">
+                                <input type="number" class="form-control " th:field="*{toAmount}"
+                                       placeholder="Enter upper limit">
+                            </div>
+                        </div>
+                    </div>
+                    <!--                    ---------NUMBER FILTER------->
+                    <div class=" form-check">
+                        <input class="form-check-input filter-checkbox" th:field="*{accountNumberFilter}"
+                               type="checkbox">
+                        <label class="form-check-label">by account number</label>
+                        <div class="row filter-input">
+                            <div class="col-8 col-md-4 form-group">
+                                <input type="text" class="form-control" th:field="*{accountNumber}"
+                                       placeholder="Enter account number">
+                            </div>
+                        </div>
+                    </div>
+                    <!--                    ---------DATE  FILTER------->
+                    <div class=" form-check">
+                        <input class="form-check-input filter-checkbox" th:field="*{dateFilter}" type="checkbox"
+                               value="">
+                        <label class="form-check-label">by date</label>
+                        <div class="row filter-input">
+                            <div class="col-4 col-md-2  form-group">
+                                <input type="date" class="form-control" th:field="*{fromDate}"
+                                       placeholder="Select from date">
+                            </div>
+                            <div class="col-4 col-md-2  form-group">
 
-
-
+                                <input type="date" class="form-control" th:field="*{toDate}"
+                                       placeholder="Select to date">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="d-grid gap-0 col-3 mx-auto">
+                        <button class="btn btn-primary btn-sm border mt-2" type="submit">Search</button>
+                    </div>
+                </form>
+                <div style="max-height: 700px;" class="overflow-auto m-3">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <th>Transfer relation</th>
+                                <th>Account</th>
+                                <th>Amount</th>
+                                <th>Received at</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="transferRow : ${transferHistory}">
+                                <td th:text="${transferRow.isSent()} ? 'Sent to' : 'Received from'"></td>
+                                <td th:text="${transferRow.toAccount}"></td>
+                                <td th:text="${transferRow.amount}"></td>
+                                <td th:text="${transferRow.receiveAt}"></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <select onchange="drawChartBySelectedYear()" class="form-control" id="dropDownYearList">
+                <option th:each="year,iter : ${yearsOfActivity}" th:value="${iter.index}" th:text="${year}">
+                </option>
+            </select>
+            <div id="chart_div" style="width: 900px; height: 500px;">
+            </div>
+        </div>
 </div>
 <footer th:replace="fragments/footer :: footer">
-
 </footer>
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script type="text/javascript" th:inline="javascript">
+
+
+    // Load the Visualization API and the corechart package.
+    google.charts.load('current', {'packages': ['bar']});
+
+    // Set a callback to run when the Google Visualization API is loaded.
+    google.charts.setOnLoadCallback(drawChart);
+
+    // Callback that creates and populates a data table,
+    // instantiates the pie chart, passes in the data and
+    // draws it.
+
+    function drawChart() {
+
+        // Create the data table.
+        var data = new google.visualization.DataTable();
+        data.addColumn('number', 'Month');
+        data.addColumn('number', 'Expenses');
+        data.addColumn('number', 'Incomes');
+
+        data.addRows([[${chartData}]].at(0));
+
+        // Set chart options
+        var options = {
+            'title': 'Expenses and incomes',
+            'width': 800,
+            'height': 300
+        };
+
+        // Instantiate and draw our chart, passing in some options.
+        var chart = new google.charts.Bar(document.getElementById('chart_div'));
+        chart.draw(data, google.charts.Bar.convertOptions(options));
+
+
+    }
+
+    function drawChartBySelectedYear() {
+        let index = document.getElementById("dropDownYearList").value;
+        var data = new google.visualization.DataTable();
+        data.addColumn('number', 'Month');
+        data.addColumn('number', 'Expenses');
+        data.addColumn('number', 'Incomes');
+
+        data.addRows([[${chartData}]].at(index));
+        var options = {
+            'title': 'Expenses and incomes',
+            'width': 800,
+            'height': 300
+        };
+
+        var chart = new google.charts.Bar(document.getElementById('chart_div'));
+        chart.draw(data, google.charts.Bar.convertOptions(options));
+    }
+</script>
 </body>
 </html>

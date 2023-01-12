@@ -1,10 +1,8 @@
 package pl.maciejowsky.bankapp.dao;
 
 
-import pl.maciejowsky.bankapp.model.FormRegisterUser;
 import pl.maciejowsky.bankapp.model.User;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 public interface UserDAO {
@@ -12,13 +10,16 @@ public interface UserDAO {
 
     User findUserById(int id);
 
-    void saveUser(FormRegisterUser user);
+    int saveUser(User user);
 
     //defult is sorted by creation
     int findNumberOfUsers();
 
     List<User> findAllUsers(int page);
 
+    void updateEmail(int userId,String newEmail);
+
+    void updatePassword(int userId,String newPassword);
 
     List<User> findAllUsersAndSortByName(int page);
 

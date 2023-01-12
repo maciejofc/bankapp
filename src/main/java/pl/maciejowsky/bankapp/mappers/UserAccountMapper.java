@@ -14,7 +14,7 @@ public class UserAccountMapper implements RowMapper<UserAccount> {
     public UserAccount mapRow(ResultSet rs, int rowNum) throws SQLException {
         return new UserAccount(
                 rs.getInt("id"),
-                rs.getString("accountNumber"),
+                rs.getString("account_number"),
                 rs.getBigDecimal("balance"),
                 rs.getInt("fk_user_id")
         );

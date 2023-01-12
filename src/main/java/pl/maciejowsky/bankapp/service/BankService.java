@@ -12,6 +12,8 @@ public interface BankService {
 
     List<BankAnnouncement> getBankAnnouncements();
 
+    List<BankAnnouncement> getBankAnnouncements(String roleOfConsumer);
+
     void addAnnouncement(BankAnnouncement bankAnnouncement);
 
     void addDepositVariant(BankDepositSettings bankDepositSettings);

@@ -1,0 +1,1 @@
+INSERT INTO bank_profit VALUES();

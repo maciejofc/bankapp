@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/bootstrap :: baseHead(~{::title}, ~{::link})">
+    <title>Requests</title>
+    <link rel="stylesheet" th:href="@{/styles.css}">
+</head>
+
+<body class="d-flex flex-column min-vh-100">
+
+
+<div th:replace="fragments/header :: header">
+
+</div>
+<nav th:replace="fragments/nav :: menu">
+
+</nav>
+<div class="container ">
+    <h1>Requests</h1>
+    <div class="my-4 p-4 rounded bg-white">
+        <div class="col-12 rounded bg-white">
+            <div style="max-height: 700px;" class="overflow-auto  ">
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th>Request Amount</th>
+                            <th>User profile</th>
+                            <th>Status</th>
+                            <th colspan="3">Make action</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="request : ${requests}">
+                            <td th:text="${request.amount}"></td>
+                            <td><a class="btn btn-primary m-2" th:href="@{/user/{id}(id=${request.userIdOfRequest})}">Check
+                                profile</a></td>
+                            <td th:text="${request.requestStatus}"></td>
+                            <td><a class="btn btn-primary m-2"
+                                   th:href="@{/requests/{id}/{decision}(id=${request.id},decision='accept')}">Accept</a>
+                            </td>
+                            <td><a class="btn btn-primary m-2"
+                                   th:href="@{/requests/{id}/{decision}(id=${request.id},decision='decline')}">Decline</a>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<footer th:replace="fragments/footer :: footer">
+</footer>
+<script th:src="@{/script.js}"></script>
+</body>

@@ -1,21 +1,17 @@
-<div class="container " th:fragment="header" xmlns:sec="http://www.w3.org/1999/xhtml">
-    <header class="d-flex flex-wrap align-items-center justify-content-center justify-content-md-between py-3 mb-4 border-bottom">
-        <a class="d-flex align-items-center col-md-3 mb-2 mb-md-0 text-dark text-decoration-none" href="/">
-            <svg  class="bi me-2" height="32" role="img" width="40">
-                <use xlink:href="#bootstrap"></use>
-            </svg>
-        </a>
+<div class="container  " th:fragment="header" xmlns:sec="http://www.w3.org/1999/xhtml">
+    <header class="d-flex flex-wrap align-items-center  py-3 mb-4 border-bottom">
 
-        <ul class="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0">
-            <li><a class="nav-link px-2 link-secondary" th:href="@{~/index}">Home</a></li>
+        <div class="col-3 col-md-0 "></div>
+        <ul class="nav col-12 col-md-6 col-12  mb-2 mb-md-0 justify-content-center ">
+            <li><a class="nav-link px-2 link-secondary" th:href="@{/index}">Home</a></li>
             <li><a class="nav-link px-2 link-dark" href="#">Features</a></li>
             <li><a class="nav-link px-2 link-dark" href="#">About</a></li>
         </ul>
 
-        <div class="col-md-3 text-end">
-            <a class="btn btn-outline-primary me-2" sec:authorize="isAnonymous()" th:href="@{~/login}">Login</a>
-            <a class="btn btn-primary" sec:authorize="isAnonymous()" th:href="@{~/register}">Sign-up</a>
-            <a class="btn btn-primary" sec:authorize="isAuthenticated()" th:href="@{~/logout}">Logout</a>
+        <div class="d-flex col-6 mx-auto  col-md-3 justify-content-center justify-content-md-end   ">
+            <a class="btn btn-outline-primary me-2" sec:authorize="isAnonymous()" th:href="@{/login}">Login</a>
+            <a class="btn btn-primary" sec:authorize="isAnonymous()" th:href="@{/register}">Sign-up</a>
+            <a class="btn btn-primary" sec:authorize="isAuthenticated()" th:href="@{/logout}">Logout</a>
         </div>
     </header>
 </div>

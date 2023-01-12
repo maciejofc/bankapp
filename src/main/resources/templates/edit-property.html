@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/bootstrap :: baseHead(~{::title}, ~{::link})">
+    <title>Settings</title>
+    <link rel="stylesheet" th:href="@{/styles.css}">
+</head>
+
+<body class="d-flex flex-column min-vh-100">
+
+
+<div th:replace="fragments/header :: header">
+
+</div>
+<nav th:replace="fragments/nav :: menu">
+
+</nav>
+<div class="container ">
+    <div class="row">
+        <div class="col-6">
+            <h1>Change credentials</h1>
+            <div class="bg-white rounded my-4 p-4">
+                <form method="post" th:action="@{__${#httpServletRequest.requestURI}__}"
+                      th:object="${editObject}">
+                    <div th:if="${#httpServletRequest.requestURI == '/profile/edit/email'}">
+                        <div class="form-floating mb-4">
+                            <input class="form-control" th:field="*{email}"
+                                   type="text"/>
+                            <label class="form-label">New email</label>
+                        </div>
+                        <div th:errors="*{email}" th:if="${#fields.hasErrors('email')}"></div>
+                        <div th:if="${error}" th:text="${error}"></div>
+                        <div class="d-grid mt-3 ">
+                            <button type="submit" class="btn btn-primary btn-block">Change email</button>
+                        </div>
+                    </div>
+                    <div th:if="${#httpServletRequest.requestURI == '/profile/edit/password'}">
+                        <div class="form-floating mb-4">
+                            <input class="form-control" th:field="*{password}"
+                                   type="text"/>
+                            <label class="form-label">New password</label>
+                        </div>
+                        <div th:errors="*{password}" th:if="${#fields.hasErrors('password')}"></div>
+                        <div class="text-danger" th:if="${error}" th:text="${error}"></div>
+                        <div class="d-grid mt-3">
+                            <button type="submit" class="btn btn-primary btn-block">Change password</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<footer th:replace="fragments/footer :: footer">
+</footer>
+<script th:src="@{/script.js}"></script>
+</body>

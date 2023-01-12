@@ -1,9 +1,9 @@
 <!DOCTYPE HTML>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
 <head th:replace="fragments/bootstrap :: baseHead(~{::title}, ~{::link})">
-    <meta charset="UTF-8"/>
+
     <title>Homepage</title>
-    <link href="#" rel="stylesheet">
+    <link href="styles.css" rel="stylesheet">
 </head>
 <body class="d-flex flex-column min-vh-100">
 
@@ -12,15 +12,53 @@
 </div>
 <nav th:replace="fragments/nav :: menu"></nav>
 
-<div class="container-fluid  ">
-
-
-<h1>WELCOME PAGE</h1>
-
+<div class="container ">
+    <div class="text-center">
+        <div sec:authorize="isAuthenticated()">
+            <div class="" sec:authorize="hasRole('ROLE_ADMIN')">
+                <h1>Welcome admin!</h1>
+                <h3 th:text="${user.fullName}"></h3>
+                <h5 th:text="'Bank profit: ' + ${bankProfit}"></h5>
+            </div>
+            <div sec:authorize="hasRole('ROLE_MANAGER')">
+                <h1>Welcome manager</h1>
+                <h3 th:text="${user.fullName}"></h3>
+            </div>
+            <div class="" sec:authorize="hasRole('ROLE_USER')">
+                <h1>Welcome user</h1>
+                <h3 th:text="${user.fullName}"></h3>
+                <h5 th:text="'Balance: ' + ${userAccount.balance}"></h5>
+            </div>
+        </div>
+    </div>
+    <div class="d-flex justify-content-center justify-content-md-between flex-wrap my-3 gap-3">
+        <div style="flex-basis: 300px"
+             class="d-flex flex-column justify-content-between border rounded-3  announcement p-2 bg-white"
+             th:each="announcement : ${announcements}">
+            <div class="" th:if="${announcement.shortenedContent == null}">
+                <em>
+                    <div th:text="${announcement.content}"></div>
+                </em>
+            </div>
+            <div class="popup" th:unless="${announcement.shortenedContent == null}">
+                <div class="overlay"></div>
+                <div class="content">
+                    <div class="close-btn" >&times;</div>
+                    <h1 class="popup-title">Announcement</h1>
+                    <p th:text="${announcement.content}"></p>
+                </div>
+                <em>
+                    <div class="announcement-full-text" style="font-size: 0px;" th:text="${announcement.content}"></div>
+                    <div th:text="${announcement.shortenedContent} + '...'"></div>
+                </em>
+                <div class="read-more-button"><a class="link-dark" href="#">Read more</a></div>
+            </div>
+            <div class="align-self-end" th:text="${announcement.createdAt}"></div>
+        </div>
+    </div>
 </div>
 <footer th:replace="fragments/footer :: footer">
-
 </footer>
-
+<script th:src="@{/script.js}"></script>
 </body>
 </html>

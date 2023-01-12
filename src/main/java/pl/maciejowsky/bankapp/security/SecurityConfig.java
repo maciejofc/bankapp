@@ -55,7 +55,7 @@ public class SecurityConfig {
 
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
-        return (web) -> web.ignoring().antMatchers("/images/**", "/js/**", "/webjars/**","/fragments/**");
+        return (web) -> web.ignoring().antMatchers("/images/**", "/js/**", "/webjars/**", "/fragments/**");
     }
 
 
@@ -74,11 +74,14 @@ public class SecurityConfig {
         http.csrf().disable()
                 .authorizeRequests()
 
-                .antMatchers("/", "/index").permitAll()
+                .antMatchers("/", "/index","/script.js", "/styles.css").permitAll()
                 .antMatchers("/register/**").permitAll()
+                .antMatchers("/login/**").permitAll()
                 .antMatchers("/user/ban").hasRole("ADMIN")
+                .antMatchers("/requests/**").hasRole("MANAGER")
+                .antMatchers("/request/**").hasRole("USER")
                 .antMatchers("/user/unban").hasRole("ADMIN")
-                .antMatchers("/users").hasRole("ADMIN")
+                .antMatchers("/users").hasAnyRole("ADMIN", "MANAGER")
                 .antMatchers("/bank").hasRole("ADMIN")
                 .antMatchers("/**").authenticated()
                 .and()
@@ -88,11 +91,12 @@ public class SecurityConfig {
                                 .failureHandler(new SimpleUrlAuthenticationFailureHandler() {
                                     @Override
                                     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
-                                        System.out.println("failed login and message = "+ exception.getMessage());
+                                        System.out.println("failed login and message = " + exception.getMessage());
 
                                         System.out.println(exception.getClass().getCanonicalName());
-                                        super.setDefaultFailureUrl("/login?error="+exception.getMessage());
-                                        super.onAuthenticationFailure(request,response,exception);
+                                        super.setDefaultFailureUrl("/login?error=" + exception.getMessage());
+//                                        super.setDefaultFailureUrl("/index?error=costam");
+                                        super.onAuthenticationFailure(request, response, exception);
                                     }
                                 })
 

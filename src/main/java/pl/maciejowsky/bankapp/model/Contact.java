@@ -4,7 +4,7 @@ public class Contact {
 
     private String name;
     private String accountNumber;
-    private int contactOwnerId;
+    private final int contactOwnerId;
 
     public String getName() {
         return name;

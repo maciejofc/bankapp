@@ -70,7 +70,7 @@ public class BankSettingsDAOImpl implements BankSettingsDAO {
         jdbcTemplate.update(sql,
                 bankDepositSettings.getMinDepositTime(),
                 bankDepositSettings.getName(),
-                bankDepositSettings.getMinPercentageRate(),
+                bankDepositSettings.getPercentageRate(),
                 bankDepositSettings.getMinAmount(),
                 bankDepositSettings.getIntendedFor().name().toLowerCase()
         );

@@ -22,4 +22,10 @@ public interface TransferService {
 
     List<Contact> getContactsForUser(int userOwnerId);
 
+
+    List<Integer> getActiveTransferYears(int userId);
+
+
+     List<List<List<Object>>> getChartData(int userId);
+
 }

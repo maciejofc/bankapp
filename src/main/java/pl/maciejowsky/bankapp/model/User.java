@@ -55,7 +55,14 @@ public class User implements Serializable {
 
     public User() {
     }
+    public User(FormRegisterUser formRegisterUser){
 
+        this.fullName = formRegisterUser.getFullName();
+        this.birthDay = formRegisterUser.getBirthDay();
+        this.email = formRegisterUser.getEmail();
+        this.password = formRegisterUser.getPassword();
+
+    }
     public List<String> getRolesList() {
         if (this.roles.length() > 0) {
             return Arrays.asList(this.roles.split(","));

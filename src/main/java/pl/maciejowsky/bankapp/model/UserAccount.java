@@ -1,6 +1,7 @@
 package pl.maciejowsky.bankapp.model;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 public class UserAccount {
     private int id;

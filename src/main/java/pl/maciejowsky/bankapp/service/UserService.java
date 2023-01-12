@@ -1,6 +1,8 @@
 package pl.maciejowsky.bankapp.service;
 
-import org.springframework.security.core.userdetails.UserDetails;
+import pl.maciejowsky.bankapp.exceptions.NoUserFoundException;
+import pl.maciejowsky.bankapp.exceptions.PermissionDeniedException;
+import pl.maciejowsky.bankapp.exceptions.SamePasswordException;
 import pl.maciejowsky.bankapp.exceptions.UserAlreadyExistException;
 import pl.maciejowsky.bankapp.model.FormRegisterUser;
 import pl.maciejowsky.bankapp.model.User;
@@ -9,11 +11,13 @@ import java.security.Principal;
 import java.util.List;
 
 public interface UserService {
-    boolean checkIfUserAlreadyExist(String email);
+    boolean checkIfUserEmailAlreadyExists(String email);
 
     String getUserRoleByUsername(String email);
 
     void registerUser(FormRegisterUser user) throws UserAlreadyExistException;
+
+    void registerManager(FormRegisterUser formRegisterUser) throws UserAlreadyExistException;
 
     int getNumberOfPages(int rows);
 
@@ -21,11 +25,15 @@ public interface UserService {
 
     boolean checkIfUserIsOnline(String username);
 
+    User getUserByEmail(String userEmail) throws Exception;
+
     void changeUserLockProperty(int userId, boolean banOrNot);
 
-    User getUserById(int userId);
+    void changePassword(int userId, String newPassword) throws SamePasswordException;
 
-    User getUserById(Principal principalOfAsker, int userId);
+    void changeEmail(int userId, String newEmail) throws UserAlreadyExistException;
+
+    User getUserById(Principal principalOfAsker, int requestedUserId) throws PermissionDeniedException, NoUserFoundException;
 
 
 }

@@ -6,14 +6,18 @@ import org.springframework.security.core.session.SessionInformation;
 import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
+import pl.maciejowsky.bankapp.dao.UserAccountDAO;
 import pl.maciejowsky.bankapp.dao.UserDAO;
+import pl.maciejowsky.bankapp.exceptions.NoUserFoundException;
+import pl.maciejowsky.bankapp.exceptions.PermissionDeniedException;
+import pl.maciejowsky.bankapp.exceptions.SamePasswordException;
 import pl.maciejowsky.bankapp.exceptions.UserAlreadyExistException;
 import pl.maciejowsky.bankapp.model.FormRegisterUser;
 import pl.maciejowsky.bankapp.model.User;
 
+import javax.validation.constraints.Email;
 import java.security.Principal;
 import java.util.List;
-import java.util.stream.Collectors;
 
 
 @Service
@@ -22,6 +26,9 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private UserDAO userDAO;
 
+    @Autowired
+    private UserAccountDAO userAccountDAO;
+
 //    @Autowired
 //    PasswordEncoder passwordEncoder;
 
@@ -29,21 +36,47 @@ public class UserServiceImpl implements UserService {
     SessionRegistry sessionRegistry;
 
     @Override
-    public boolean checkIfUserAlreadyExist(String email) {
-        return userDAO.findUserByEmail(email) != null ? true : false;
+    public boolean checkIfUserEmailAlreadyExists(String email) {
+        return userDAO.findUserByEmail(email) != null;
     }
 
 
     @Override
-    public void registerUser(FormRegisterUser user) throws UserAlreadyExistException {
-        if (checkIfUserAlreadyExist(user.getEmail())) {
+    public void registerUser(FormRegisterUser formRegisterUser) throws UserAlreadyExistException {
+        if (checkIfUserEmailAlreadyExists(formRegisterUser.getEmail())) {
             throw new UserAlreadyExistException("User already exists for this email");
+        }
 
+        String userRole = "user";
+        String userAuthority = "ACCESS_1";
+        formRegisterUser.setPassword(formRegisterUser.getPassword());
+        User user = new User(formRegisterUser);
+        user.setRoles(userRole);
+        user.setAuthorities(userAuthority);
+
+//        user.setPassword(passwordEncoder.encode(user.getPassword()));
+
+        int userId = userDAO.saveUser(user);
+
+        userAccountDAO.saveUserAccount(userId);
+
+    }
+
+    @Override
+    public void registerManager(FormRegisterUser formRegisterUser) throws UserAlreadyExistException {
+
+        if (checkIfUserEmailAlreadyExists(formRegisterUser.getEmail())) {
+            throw new UserAlreadyExistException("User already exists for this email");
         }
 //        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        user.setPassword(user.getPassword());
+        formRegisterUser.setPassword(formRegisterUser.getPassword());
+        User user = new User(formRegisterUser);
+        String userRole = "manager";
+        String userAuthority = "ACCESS_1,ACCESS_2";
+        user.setRoles(userRole);
+        user.setAuthorities(userAuthority);
+        user.setUserType(null);
         userDAO.saveUser(user);
-
 
     }
 
@@ -98,30 +131,65 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User getUserById(int userId) {
-        return userDAO.findUserById(userId);
+    public User getUserById(Principal principalOfAsker, int requestedUserId) throws PermissionDeniedException, NoUserFoundException {
+        User userById = userDAO.findUserById(requestedUserId);
+        if (userById == null)
+            throw new NoUserFoundException("No such user");
+        checkIfRequestAskerHavePermission(principalOfAsker, userById.getEmail());
+        return userById;
 
     }
 
     @Override
-    public User getUserById(Principal principalOfAsker, int userId) {
-        String askerRole = getUserRoleByUsername(principalOfAsker.getName());
-        User foundUser = userDAO.findUserById(userId);
-        String foundUserRole = getUserRoleByUsername(foundUser.getEmail());
+    public User getUserByEmail(String userEmail) throws NoUserFoundException {
+        User userByEmail = userDAO.findUserByEmail(userEmail);
+        if (userByEmail == null)
+            throw new NoUserFoundException("No such user with this email");
 
-        if (askerRole.equals("admin")) {
-            if (foundUserRole.equals("admin")) {
-                return null;
-            }
-            return foundUser;
-        } else {
-            if (foundUserRole.equals("manager") || foundUserRole.equals("admin")) {
-                return null;
-            } else
-                return foundUser;
+        return userByEmail;
+    }
+
+    private void checkIfRequestAskerHavePermission(Principal principalOfAsker, String emailOfRequestedUser) throws PermissionDeniedException {
+        String adminRolesPermission = "manager,user";
+        String managerRolesPermission = "user";
+        String roleOfAsker = getUserRoleByUsername(principalOfAsker.getName());
+        String roleOfAsked = getUserRoleByUsername(emailOfRequestedUser);
+        boolean havePermission = true;
+
+        System.out.println("ROLE OF ASKER IS" + roleOfAsker);
+        if (roleOfAsker.equals("admin")) {
+
+            havePermission = adminRolesPermission.contains(roleOfAsked);
+
+        } else if (roleOfAsker.equals("manager")) {
+            havePermission = managerRolesPermission.contains(roleOfAsked);
+        }
+        if (!havePermission) {
+
+            throw new PermissionDeniedException("You have no permission to this data");
         }
 
     }
+
+//    @Override
+//    public User getUserById(Principal principalOfAsker, int userId) {
+//        String askerRole = getUserRoleByUsername(principalOfAsker.getName());
+//        User foundUser = userDAO.findUserById(userId);
+//        String foundUserRole = getUserRoleByUsername(foundUser.getEmail());
+//
+//        if (askerRole.equals("admin")) {
+//            if (foundUserRole.equals("admin")) {
+//                return null;
+//            }
+//            return foundUser;
+//        } else {
+//            if (foundUserRole.equals("manager") || foundUserRole.equals("admin")) {
+//                return null;
+//            } else
+//                return foundUser;
+//        }
+//
+//    }
 
 
     //This method also invalidates session!
@@ -137,5 +205,25 @@ public class UserServiceImpl implements UserService {
             userDAO.banUser(userId);
         } else
             userDAO.unBanUser(userId);
+    }
+
+    @Override
+    public void changePassword(int userId, String newPassword) throws SamePasswordException {
+        User user = userDAO.findUserById(userId);
+        if (user.getPassword().equals(newPassword)) {
+            throw new SamePasswordException("This is your current password try another");
+        }
+        userDAO.updatePassword(userId, newPassword);
+    }
+
+    @Override
+    public void changeEmail(int userId, String newEmail) throws UserAlreadyExistException {
+        if (userDAO.findUserById(userId).getEmail().equals(newEmail)) {
+            throw new UserAlreadyExistException("This is your current email, specify another");
+        }
+        if (checkIfUserEmailAlreadyExists(newEmail)) {
+            throw new UserAlreadyExistException("This email is already taken, please try another");
+        }
+        userDAO.updateEmail(userId, newEmail);
     }
 }

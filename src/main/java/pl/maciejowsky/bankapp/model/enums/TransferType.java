@@ -33,7 +33,7 @@ public enum TransferType {
 
 
     private int fee;
-    private int timeOfSendingInMiliSec;
+    private final int timeOfSendingInMiliSec;
 
     TransferType(int timeOfSendingInMiliSec) {
         this.timeOfSendingInMiliSec = timeOfSendingInMiliSec;

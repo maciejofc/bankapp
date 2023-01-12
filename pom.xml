@@ -72,6 +72,10 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
+			<groupId>com.fasterxml.jackson.datatype</groupId>
+			<artifactId>jackson-datatype-jsr310</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>org.flywaydb</groupId>
 			<artifactId>flyway-mysql</artifactId>
 		</dependency>
@@ -90,7 +94,7 @@
 				<configuration>
 					<url>jdbc:mysql://localhost:3306/bankapp?useUnicode=true&amp;useJDBCCompliantTimezoneShift=true&amp;useLegacyDatetimeCode=false&amp;serverTimezone=Europe/Berlin</url>
 					<user>root</user>
-					<password>mysqlpassword123@</password>
+					<password>user</password>
 				</configuration>
 
 			</plugin>

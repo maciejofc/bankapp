@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:replace="fragments/bootstrap :: baseHead(~{::title}, ~{::link})">
-    <title>Settings</title>
+    <title>Bank settings</title>
     <link rel="stylesheet" th:href="@{/styles.css}">
 </head>
 
@@ -14,23 +14,19 @@
 <nav th:replace="fragments/nav :: menu">
 
 </nav>
-<div class="container  ">
-
-
-    <!--     -------------------ANNOUNCEMENT SECTION ------------------- -->
-
-    <h1 class="">Settings</h1>
+<div class="container">
     <!-- -------- ENTER ANNOUNCEMENT SECTION --------->
-    <div class="row border rounded my-4 px-1 py-3">
-        <div class="col-lg-12 ">
-            <h3>Add announcement</h3>
-            <div class="m-3">
+    <div class="row">
+        <div class="col-12">
+            <h1 >Settings</h1>
+            <div class="rounded my-4  bg-white p-4 ">
+                <h3>Add announcement</h3>
                 <form method="post" th:action="@{/bank/settings/announcement}"
                       th:object="${announcementForm}">
-
                     <div class="d-flex flex-column ">
-                        <div class="d-flex justify-content-between align-items-end ">
-                            <span style="font-size: 20px">Enter an announcement</span>
+                        <div class="d-flex justify-content-between align-items-end my-2">
+                            <div>
+                            </div>
                             <div>
                                 <span class="">Visibility:</span>
                                 <select th:field="*{announcementVisibility}">
@@ -40,158 +36,131 @@
                                 </select>
                             </div>
                         </div>
-
-                        <textarea placeholder="Anouncement must be between 20 and 250 characters" class="form-control"
+                        <textarea placeholder="Anouncement must be between 20 and 250 characters"
+                                  class="form-control my-2"
                                   rows="4"
                                   th:field="*{content}"></textarea>
-
                         <div class="text-center" th:text="${announcementError}"></div>
-
-                        <div class="d-grid gap-0 col-5 mx-auto">
-                            <button class="btn btn-primary btn-lg border mt-5" type="submit">Submit</button>
+                        <div class="d-grid mt-3 ">
+                            <button type="submit" class="btn btn-primary btn-block">Submit</button>
                         </div>
-
                     </div>
                 </form>
             </div>
-
-
         </div>
     </div>
-
-
     <!-- -------- LIST OF  ANNOUNCEMENTS SECTION --------->
-    <div class="row border rounded my-4 px-1 py-3">
-        <h3>Announcement collection</h3>
-        <div style="gap:0.6rem;" class="col-lg-12 d-flex  flex-wrap   m-3">
-
-            <div style="gap:0.3rem; max-width: 350px" class="text-center text-break d-flex flex-column p-2 border "
-                 th:each="announcement:${announcements}">
-                <div class="align-self-start" th:text="${announcement.createdAt}"></div>
-                <div th:if="${announcement.shortenedContent == null}">
-                    <div th:text="${announcement.content}"></div>
+    <div class="row">
+        <div class="col-12">
+            <div class="rounded my-4  bg-white p-4 ">
+                <h3>Announcement collection</h3>
+                <div class="d-flex flex-wrap justify-content-center gap-5 m-3  ">
+                    <div style=" max-width: 350px"
+                         class="gap-1 text-center text-break d-flex flex-column p-2 border rounded"
+                         th:each="announcement:${announcements}">
+                        <div class="align-self-start" th:text="${announcement.createdAt}"></div>
+                        <div th:if="${announcement.shortenedContent == null}">
+                            <div th:text="${announcement.content}"></div>
+                        </div>
+                        <div th:unless="${announcement.shortenedContent == null}">
+                            <div th:text="${announcement.shortenedContent} + '...'"></div>
+                        </div>
+                        <div th:text="'Visible for: ' +${announcement.announcementVisibility}"></div>
+                        <a th:href="@{/bank/settings/announcement(announcementId=${announcement.id})}">Delete
+                            announcement</a>
+                    </div>
                 </div>
-                <div th:unless="${announcement.shortenedContent == null}">
-                    <div th:text="${announcement.shortenedContent} + '...'"></div>
-                </div>
-                <div th:text="'Visible for: ' +${announcement.announcementVisibility}"></div>
-                <a th:href="@{~/bank/settings/announcement(announcementId=${announcement.id})}">Delete announcement</a>
             </div>
         </div>
     </div>
-
-
     <!--     -------------------ADD DEPOSIT VARIANT SECTION ------------------- -->
-
-    <div class="row d-flex justify-content-between ">
-
-        <div class="col-lg-6 border rounded my-4 ">
-            <div class="px-1 py-3">
+    <div class="row">
+        <div class="col-lg-6">
+            <div class="rounded my-4  bg-white p-4 ">
                 <h3>Add deposit variant</h3>
-                <div class="text-break m-3">
-
+                <div class="text-break ">
                     <form class="d-flex flex-column " method="post"
                           th:action="@{/bank/settings/deposit/add}"
                           th:object="${depositSettingsForm}">
-
-                        <div class="flex-row-container d-flex justify-content-between border align-items-center my-2 p-2">
+                        <div class="flex-row-container d-flex justify-content-between border rounded align-items-center my-2 p-2">
                             <div>Name for deposit variant <span>(3-15 characters)</span></div>
                             <div class="form-floating ">
                                 <input class="form-control"
                                        th:field="*{name}"
                                        type="text"/>
                                 <label class="form-label">text</label>
-
                             </div>
-
                         </div>
-                        <div class="flex-row-container d-flex justify-content-between border  align-items-center my-2 p-2">
+                        <div class="flex-row-container d-flex justify-content-between border rounded  align-items-center my-2 p-2">
                             <div>Minimum deposit time <span>(1-60 min)</span></div>
                             <div class="form-floating ">
                                 <input class="form-control"
                                        th:field="*{MinDepositTime}"
                                        type="number"/>
                                 <label class="form-label">minutes</label>
-
                             </div>
-
                         </div>
-                        <div class="flex-row-container d-flex justify-content-between border align-items-center my-2 p-2">
+                        <div class="flex-row-container d-flex justify-content-between border rounded align-items-center my-2 p-2">
                             <div>Percantege rate <span>(0.1 - 10 %)</span></div>
                             <div class="form-floating ">
-                                <input class="form-control" th:field="*{MinPercentageRate}"
+                                <input class="form-control" th:field="*{percentageRate}"
                                        type="number" step="0.1"/>
                                 <label class="form-label">% rate</label>
-
                             </div>
-
                         </div>
-                        <div class="flex-row-container d-flex justify-content-between border align-items-center my-2 p-2">
+                        <div class="flex-row-container d-flex justify-content-between border rounded align-items-center my-2 p-2">
                             <div>Minimum amount <span>(100-10 000 $)</span></div>
                             <div class="form-floating ">
                                 <input class="form-control" th:field="*{MinAmount}"
                                        type="number"/>
                                 <label class="form-label">$</label>
-
                             </div>
-
                         </div>
-                        <div class="flex-row-container d-flex justify-content-between border align-items-center my-2 p-2">
+                        <div class="flex-row-container d-flex justify-content-between border rounded align-items-center my-2 p-2">
                             <div>Intended for</div>
                             <div style="text-align:right;" class="form-floating">
-
                                 <select th:field="*{intendedFor}">
                                     <option th:each="forUserType : ${T(pl.maciejowsky.bankapp.model.enums.UserType).values()}"
                                             th:text="${forUserType}"
                                             th:value="${forUserType}"/>
                                 </select>
-
                             </div>
                         </div>
                         <div class="text-center" th:text="${depositError}"></div>
-
-
-                        <div class="d-grid gap-0 col-5 mx-auto">
-                            <button class="btn btn-primary btn-lg border mt-5" type="submit">Submit</button>
+                        <div class="d-grid mt-3 ">
+                            <button type="submit" class="btn btn-primary btn-block">Submit</button>
                         </div>
 
                     </form>
                 </div>
             </div>
-
-
         </div>
 
 
         <!--     ------------------- DEPOSIT COLLECTION VARIANT SECTION ------------------- -->
-
-        <div class="col-lg-5  border rounded my-4 ">
-            <div class="px-1 py-3">
+        <div class="col-lg-6">
+            <div class="rounded my-4  bg-white p-4 ">
                 <h3>Variant collection</h3>
-                <div style="gap:0.3rem;" class="d-flex flex-wrap  justify-content-between m-3  border ">
-                    <div style="min-width: 180px; " class="border text-center d-flex flex-column p-2"
-                         th:each="depositVariant:${depositSettings}">
-                        <div th:text="${depositVariant.name}"></div>
-                        <div th:text="${depositVariant.MinDepositTime}"></div>
-                        <div th:text="${depositVariant.MinPercentageRate}"></div>
-                        <div th:text="${depositVariant.MinAmount}"></div>
-                        <div th:text="${depositVariant.intendedFor}"></div>
-                        <a th:href="@{~/bank/settings/deposit/delete(depositVariantId=${depositVariant.id})}">Delete
-                            variant</a>
-                    </div>
+                    <div class="d-flex flex-wrap  justify-content-center mt-3 gap-4 ">
+                        <div style="min-width: 180px; " class="border rounded text-center d-flex flex-column p-2"
+                             th:each="depositVariant:${depositSettings}">
+                            <div th:text="${depositVariant.name}"></div>
+                            <div th:text="${depositVariant.MinDepositTime}"></div>
+                            <div th:text="${depositVariant.percentageRate}"></div>
+                            <div th:text="${depositVariant.MinAmount}"></div>
+                            <div th:text="${depositVariant.intendedFor}"></div>
+                            <a th:href="@{/bank/settings/deposit/delete(depositVariantId=${depositVariant.id})}">Delete
+                                variant</a>
+                        </div>
                 </div>
             </div>
-
         </div>
     </div>
-
-
     <!--     -------------------TRANSFER SECTION ------------------- -->
-
-    <div class="row border rounded my-4 px-1 py-3">
-        <div class="col-lg-12 ">
-            <h3>Change transfer fee</h3>
-            <div class="m-3">
+    <div class="row">
+        <div class="col-12">
+            <div class="rounded my-4  bg-white p-4 ">
+                <h3>Change transfer fee</h3>
                 <form method="post" th:action="@{/bank/settings/transfer}" th:object="${transferSettingsForm}">
                     <div class="d-flex flex-column">
 
@@ -201,45 +170,37 @@
                                 <input class="form-control" th:field="*{transferInstant}"
                                        type="number"/>
                                 <label class="form-label">$</label>
-
                             </div>
-                            <div class="border text-center"
+                            <div class="text-center"
                                  th:text="${transferSettings.transferInstant} ">
-
                             </div>
                         </div>
-
-                        <div class="flex-row-container d-flex justify-content-between border align-items-center my-2 p-2">
+                        <div class="flex-row-container d-flex justify-content-between border rounded align-items-center my-2 p-2">
                             <div>Transfer express <span>(0-20 $)</span></div>
                             <div class="text-start  form-floating ">
                                 <input class="form-control" th:field="*{transferExpress}"
                                        type="number"/>
                                 <label class="form-label">$</label>
-
                             </div>
-                            <div class="border text-center"
+                            <div class="text-center"
                                  th:text="${transferSettings.transferExpress} ">
-
                             </div>
                         </div>
-
-                        <div class="flex-row-container d-flex justify-content-between border align-items-center my-2 p-2">
+                        <div class="flex-row-container d-flex justify-content-between border rounded align-items-center my-2 p-2">
                             <div>Transfer normal <span>(0-20 $)</span></div>
                             <div class="text-start form-floating ">
                                 <input class="form-control" th:field="*{transferNormal}"
                                        type="number"/>
                                 <label class="form-label">$</label>
-
                             </div>
-                            <div class=" border text-center"
+                            <div class=" text-center"
                                  th:text="${transferSettings.transferNormal} ">
-
                             </div>
                         </div>
 
                         <div class="text-center" th:text="${transferError}"></div>
-                        <div class="d-grid gap-0 col-5 mx-auto">
-                            <button class="btn btn-primary btn-lg border mt-5" type="submit">Submit</button>
+                        <div class="d-grid mt-3 ">
+                            <button type="submit" class="btn btn-primary btn-block">Submit</button>
                         </div>
                     </div>
                 </form>
@@ -247,9 +208,6 @@
         </div>
     </div>
 </div>
-
-
 <footer th:replace="fragments/footer :: footer">
-
 </footer>
 </body>

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/bootstrap :: baseHead(~{::title}, ~{::link})">
+    <title>Make request</title>
+    <link rel="stylesheet" th:href="@{/styles.css}">
+</head>
+
+<body class="d-flex flex-column min-vh-100">
+
+
+<div th:replace="fragments/header :: header">
+
+</div>
+<nav th:replace="fragments/nav :: menu">
+
+</nav>
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <h1>Request</h1>
+            <div>
+                <div class="rounded my-4  bg-white p-4">
+                    <h2>Make request</h2>
+                    <span class="ms-1">Max 1 000 000 $</span>
+                    <form class="d-flex flex-column" method="post" th:action="@{/request}" th:object="${formRequest}">
+                        <div class="text-start form-floating my-2">
+                            <input class="form-control" id="account-number-input" th:field="*{amount}"
+                                   type="number" max="1000000"/>
+                            <label class="form-label">Request Amount</label>
+                        </div>
+                        <div class="d-grid mt-3 ">
+                            <button type="submit" class="btn btn-primary btn-block">Search</button>
+                        </div>
+                    </form>
+                    <div th:if="${param.requestError}" th:text="${param.requestError}"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <div>
+                <div class="border rounded my-4  bg-white p-4">
+                    <h2>Latest 10 requests</h2>
+                    <div style="max-height: 700px;" class="overflow-auto ">
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                <tr>
+                                    <th>Request Amount</th>
+                                    <th>Request status</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="request : ${userRequests}">
+                                    <td th:text="${request.amount} "></td>
+                                    <td th:text="${request.requestStatus} "></td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<footer th:replace="fragments/footer :: footer">
+</footer>
+<script th:src="@{/script.js}"></script>
+</body>

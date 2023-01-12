@@ -3,6 +3,8 @@ package pl.maciejowsky.bankapp.dao;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
+import pl.maciejowsky.bankapp.mappers.UserAccountMapper;
+import pl.maciejowsky.bankapp.model.UserAccount;
 import pl.maciejowsky.bankapp.utils.AccountNumberGenerator;
 
 import java.math.BigDecimal;
@@ -19,7 +21,7 @@ public class UserAccountDAOImpl implements UserAccountDAO {
 
     @Override
     public BigDecimal getBalanceOfUserByAccountNumber(String accountNumber) {
-        System.out.println("from dao" + accountNumber);
+
         String sql = "SELECT balance FROM users_account WHERE account_number = ?";
         return jdbcTemplate.queryForObject(sql, BigDecimal.class, accountNumber);
 
@@ -33,8 +35,20 @@ public class UserAccountDAOImpl implements UserAccountDAO {
             }
         }
 
-
     }
+
+    @Override
+    public void saveUserAccount(int userId) {
+
+        String nonExistingAccountNumber = createNonExistingAccountNumber();
+
+        String sql = "INSERT INTO  users_account(account_number, fk_user_id)  " +
+                " VALUES (?,?);";
+        jdbcTemplate.update(sql,
+                nonExistingAccountNumber, userId
+        );
+    }
+
 
     @Override
     public boolean checkIfAccountNumberExist(String accountNumber) {
@@ -43,7 +57,7 @@ public class UserAccountDAOImpl implements UserAccountDAO {
     }
 
     @Override
-    public void modifyBalanceOnAccount(String accountNumber, BigDecimal moneyToManipualte, AccountBalanceManipulation accountBalanceManipulation) {
+    public void modifyBalanceOnAccount(String accountNumber, BigDecimal moneyToManipulate, AccountBalanceManipulation accountBalanceManipulation) {
         String sql;
         if (accountBalanceManipulation.equals(AccountBalanceManipulation.SUPPLY)) {
             sql = "UPDATE users_account SET balance = balance + ? WHERE account_number = ? ";
@@ -52,8 +66,9 @@ public class UserAccountDAOImpl implements UserAccountDAO {
             sql = "UPDATE users_account SET balance = balance - ? WHERE account_number = ? ";
 
         }
-        jdbcTemplate.update(sql, moneyToManipualte, accountNumber);
+        jdbcTemplate.update(sql, moneyToManipulate, accountNumber);
     }
+
 
     @Override
     public String getAccountNumberByUserId(int userId) {
@@ -66,9 +81,23 @@ public class UserAccountDAOImpl implements UserAccountDAO {
         }
         return accountNumber;
     }
+
     @Override
     public int getUserIdByAccountNumber(String accountNumber) {
         String sql = "SELECT fk_user_id FROM users_account WHERE account_number = ?";
         return jdbcTemplate.queryForObject(sql, Integer.class, accountNumber);
+    }
+
+    @Override
+    public UserAccount getUserAccountById(int userId) {
+        UserAccount userAccount;
+        try {
+            String sql = "SELECT * FROM users_account WHERE fk_user_id = ?";
+            userAccount = jdbcTemplate.queryForObject(sql, new UserAccountMapper(), userId);
+        } catch (EmptyResultDataAccessException e) {
+            return null;
+        }
+        return userAccount;
+
     }
 }

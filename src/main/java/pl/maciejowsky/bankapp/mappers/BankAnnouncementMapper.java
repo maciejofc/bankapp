@@ -7,6 +7,7 @@ import pl.maciejowsky.bankapp.utils.DateFormatter;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.Instant;
 
 public class BankAnnouncementMapper implements RowMapper<BankAnnouncement> {
     @Override
@@ -14,6 +15,7 @@ public class BankAnnouncementMapper implements RowMapper<BankAnnouncement> {
 
         String announcementVisibilityString = rs.getString("visibility");
         AnnouncementVisibility announcementVisibility = AnnouncementVisibility.valueOf(announcementVisibilityString.toUpperCase());
+
         return new BankAnnouncement(
                 rs.getInt("id"),
                 rs.getString("content"),

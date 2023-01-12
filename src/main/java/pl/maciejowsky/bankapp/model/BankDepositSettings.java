@@ -10,26 +10,26 @@ public class BankDepositSettings {
     private String name;
     @Min(value = 1)
     @Max(value = 60)
-    private int MinDepositTime;
+    private int minDepositTime;
     @DecimalMin(value="0.01")
     @DecimalMax(value="10.0")
 
-    private double MinPercentageRate;
+    private double percentageRate;
     @Min(value = 100)
     @Max(value = 10000)
-    private int MinAmount;
+    private int minAmount;
 
     private UserType intendedFor;
 
     public BankDepositSettings() {
     }
 
-    public BankDepositSettings(int id, String name, int minDepositTime, double minPercentageRate, int minAmount, UserType intendedFor) {
+    public BankDepositSettings(int id, String name, int minDepositTime, double percentageRate, int minAmount, UserType intendedFor) {
         this.id = id;
         this.name = name;
-        MinDepositTime = minDepositTime;
-        MinPercentageRate = minPercentageRate;
-        MinAmount = minAmount;
+        this.minDepositTime = minDepositTime;
+        this.percentageRate = percentageRate;
+        this.minAmount = minAmount;
         this.intendedFor = intendedFor;
     }
 
@@ -50,27 +50,27 @@ public class BankDepositSettings {
     }
 
     public int getMinDepositTime() {
-        return MinDepositTime;
+        return minDepositTime;
     }
 
     public void setMinDepositTime(int minDepositTime) {
-        MinDepositTime = minDepositTime;
+        this.minDepositTime = minDepositTime;
     }
 
-    public double getMinPercentageRate() {
-        return MinPercentageRate;
+    public double getPercentageRate() {
+        return percentageRate;
     }
 
-    public void setMinPercentageRate(double minPercentageRate) {
-        MinPercentageRate = minPercentageRate;
+    public void setPercentageRate(double percentageRate) {
+        this.percentageRate = percentageRate;
     }
 
     public int getMinAmount() {
-        return MinAmount;
+        return minAmount;
     }
 
     public void setMinAmount(int minAmount) {
-        MinAmount = minAmount;
+        this.minAmount = minAmount;
     }
 
     public UserType getIntendedFor() {

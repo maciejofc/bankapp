@@ -1,8 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:replace="fragments/bootstrap :: baseHead(~{::title}, ~{::link})">
-    <meta charset="UTF-8"/>
-    <title>Homepage</title>
+    <title>Users</title>
     <link href="styles.css" rel="stylesheet">
 </head>
 
@@ -18,55 +17,59 @@
 </nav>
 
 <div style="min-height: 720px" class="container  ">
-    <h1 class="">Users </h1>
-    <form method="get" th:action="@{/search-user}">
-        <div class="input-group">
-            <div class="form-outline">
-                <input type="text" placeholder="Search by email" id="email" name="email" th:value="${email}"
-                       class="form-control rounded"/>
-
+    <div class="row">
+        <div class="col-12">
+            <h1>Users</h1>
+            <div class="rounded my-4  bg-white p-4 ">
+                <form method="get" th:action="@{/search-user}">
+                    <div class="input-group">
+                        <div class="form-outline">
+                            <input type="text" placeholder="Search by email" id="email" name="email" th:value="${email}"
+                                   class="form-control rounded"/>
+                        </div>
+                        <button type="submit" class="btn btn-outline-primary">search</button>
+                    </div>
+                    <div th:if="${param.error!=null}" th:text="${param.error}"></div>
+                </form>
+                <div class="d-flex  border-bottom">
+                    <a class="btn btn-primary my-2 mr-2" th:href="@{/users(orderBy=creation,page=1)}">Order by creation
+                        date</a>
+                    <a class="btn btn-primary m-2" th:href="@{/users(orderBy=name,page=1)}">Order by name </a>
+                    <a class="btn btn-primary m-2" th:href="@{/users(orderBy=age,page=1)}">Order by age</a>
+                </div>
             </div>
-            <button type="submit" class="btn btn-outline-primary">search</button>
-        </div>
-
-    </form>
-
-    <div class="d-flex  border-bottom">
-        <a class="btn btn-primary my-2 mr-2" th:href="@{~/users(orderBy=creation,page=1)}">Order by creation date</a>
-        <a class="btn btn-primary m-2" th:href="@{~/users(orderBy=name,page=1)}">Order by name </a>
-        <a class="btn btn-primary m-2" th:href="@{~/users(orderBy=age,page=1)}">Order by age</a>
-    </div>
-    <div class="d-flex flex-wrap justify-content-center  py-3  ">
-        <div class="border text-center
-          d-flex  flex-column p-4 m-4" style="flex-basis: 150px" th:each="user:${usersList}">
-            <p th:text="${user.fullName}"></p>
-            <p th:text="${user.roles}"></p>
-            <p th:if="${user.isOnline()}">Online</p>
-            <p th:unless="${user.isOnline()}">Offline</p>
-            <a th:href="@{~/user(userId=${user.id})}">Check details</a>
         </div>
     </div>
-
-
+    <div class="row">
+        <div class="col-12">
+            <div class="rounded my-4  bg-white p-4 ">
+                <div class="d-flex flex-wrap justify-content-center gap-5  py-3 ">
+                    <div class="border rounded text-center
+          d-flex  flex-column p-4 my-2 " style="flex-basis: 150px" th:each="user:${usersList}">
+                        <p th:text="${user.fullName}"></p>
+                        <p th:text="${user.roles}"></p>
+                        <p th:if="${user.isOnline()}">Online</p>
+                        <p th:unless="${user.isOnline()}">Offline</p>
+                        <a th:href="@{/user/{id}(id=${user.id})}">Check details</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 <div class="mt-auto ">
     <nav>
         <ul class="pagination d-flex justify-content-center m-3 ">
-
-
             <li th:class="page-item" th:each="i : ${#numbers.sequence(1, numberOfPages)}">
                 <a th:class="page-link"
                    th:classappend="${__${pageNo}__ == __${i}__ ? 'bg-primary text-white': 'bg-light'}"
                    th:href="@{~/users(orderBy=${param.orderBy},page=${i})}"
                    th:text="'Page ' + ${i}"></a>
             </li>
-
         </ul>
     </nav>
     <footer th:replace="fragments/footer :: footer">
-
     </footer>
 </div>
-
 </body>
 </html>

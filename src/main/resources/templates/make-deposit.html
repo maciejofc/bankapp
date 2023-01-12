@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/bootstrap :: baseHead(~{::title}, ~{::link})">
+    <title>Make deposit</title>
+    <link rel="stylesheet" th:href="@{/styles.css}">
+</head>
+
+<body class="d-flex flex-column min-vh-100">
+
+
+<div th:replace="fragments/header :: header">
+
+</div>
+<nav th:replace="fragments/nav :: menu">
+
+</nav>
+<div class="container">
+    <div class="row ">
+        <div class="col-12">
+            <h1>Deposit</h1>
+            <div class="rounded my-4  bg-white p-4 ">
+                <h2>Deposit variants available for you</h2>
+                <span class="ms-1" th:text="'(Available funds ' + ${availableFunds} + ')'"></span>
+                <form class="d-flex flex-column" method="post" th:action="@{/deposit/make}" th:object="${deposit}">
+                    <div class="d-flex gap-2 my-2 ">
+                        <div class="d-flex flex-column border align-items-center p-2"
+                             th:each="variant :${depositVariants}">
+                            <div th:text="${variant.name}"></div>
+                            <div th:text="${variant.minAmount} + '$ minimum'"></div>
+                            <div th:text="${variant.minDepositTime} + ' min'"></div>
+                            <div th:text="${variant.percentageRate} + ' % rate '"></div>
+                            <div class="form-check">
+                                <input class="form-check-input" th:field="*{depositVariantId}" name="deposit-setting-id"
+                                       th:value="${variant.id}" type="radio">
+                                <label class="form-check-label">
+                                    Select me
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-start form-floating my-2 ">
+                        <input class="form-control" id="account-number-input" th:field="*{depositAmount}"
+                               type="number" step="0.01"/>
+                        <label class="form-label">Deposit Amount</label>
+                    </div>
+                    <div class="d-grid my-2">
+                        <button type="button" class="btn btn-primary btn-block">Deposit</button>
+                    </div>
+                    <div th:if="${param.depositSuccess}">Succesfully deposited</div>
+                    <div th:if="${error}" th:text="${error}"></div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="rounded my-4 bg-white p-4 ">
+                <h2 >Active deposits</h2>
+                <div th:each="activeDeposit: ${activeDeposits}">
+                    <div th:text="'Started: ' + ${activeDeposit.startDate}"></div>
+                    <div th:text="'Status: ' + ${activeDeposit.depositStatus}"></div>
+                    <div th:text="${activeDeposit.depositTime} + 'min already in deposit'"></div>
+                    <div th:text="${activeDeposit.moneyToWithdraw} + 'money to withdraw'"></div>
+                    <a th:href="@{/deposit/complete/{id}(id=${activeDeposit.id})}">Complete deposit</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<footer th:replace="fragments/footer :: footer">
+</footer>
+<script th:src="@{/script.js}"></script>
+</body>

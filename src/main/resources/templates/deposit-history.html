@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/bootstrap :: baseHead(~{::title}, ~{::link})">
+    <title>Deposit history</title>
+    <link rel="stylesheet" th:href="@{/styles.css}">
+</head>
+
+<body class="d-flex flex-column min-vh-100">
+
+
+<div th:replace="fragments/header :: header">
+
+</div>
+<nav th:replace="fragments/nav :: menu">
+
+</nav>
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <h1>Deposit history</h1>
+            <div class="rounded my-4  bg-white p-4">
+                <h2 th:text="'Already earned: ' + ${moneyEarned} + ' $'" ></h2>
+                <div style="max-height: 700px;" class="overflow-auto ">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <th>Interest rate </th>
+                                <th>Deposit amount</th>
+                                <th>Minimum Deposit time</th>
+                                <th>Money to withdraw</th>
+                                <th>Deposit status</th>
+                                <th>Started at</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="depositRow : ${depositHistory}">
+                                <td th:text="${depositRow.interestRate} + ' %'"></td>
+                                <td th:text="${depositRow.depositAmount} + '$'"></td>
+                                <td th:text="${depositRow.depositTime} + ' min'"></td>
+                                <td th:text="${depositRow.moneyToWithdraw} + '$'"></td>
+                                <td th:text="${depositRow.depositStatus}"></td>
+                                <td th:text="${depositRow.startDate}"></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<footer th:replace="fragments/footer :: footer">
+</footer>
+<script th:src="@{/script.js}"></script>
+</body>
